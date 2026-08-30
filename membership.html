@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Membership — Smile Multipurpose Cooperative</title>
+<meta name="description" content="Register as a new member or log in to your Smile Multipurpose Cooperative account.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="index.html" class="logo">Smile<span>.</span></a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="how-it-works.html">How It Works</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <a href="membership.html#login" class="btn btn-ghost">Member Login</a>
+      <a href="membership.html#register" class="btn btn-primary">Join Smile</a>
+    </div>
+    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</header>
+
+<section class="hero" style="padding:60px 0 70px;">
+  <div class="wrap" style="display:block; text-align:center;">
+    <span class="eyebrow" style="color:var(--gold-dim); justify-content:center;">New Member or Existing?</span>
+    <h1 style="font-size:var(--step-3);">We're excited to meet you.</h1>
+    <p class="lede" style="margin-left:auto; margin-right:auto; text-align:center;">Let's get started.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+
+    <div class="member-tabs">
+      <button class="member-tab-btn active" data-target="register">New Member</button>
+      <button class="member-tab-btn" data-target="login">Existing Member</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="member-panel active" id="register">
+      <div class="form-card">
+        <span class="eyebrow">New Membership Registration</span>
+        <h3 style="margin-top:10px;">Create your account</h3>
+        <form data-demo-form style="margin-top:28px;">
+          <div class="form-grid">
+            <div class="field full">
+              <label for="reg-photo">Passport Photograph</label>
+              <div class="upload-box" id="reg-photo">Click to upload a passport photograph</div>
+            </div>
+            <div class="field">
+              <label for="reg-name">Full Name</label>
+              <input id="reg-name" type="text" required>
+            </div>
+            <div class="field">
+              <label for="reg-gender">Gender</label>
+              <select id="reg-gender" required>
+                <option value="">Select</option>
+                <option>Female</option>
+                <option>Male</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="reg-dob">Date of Birth</label>
+              <input id="reg-dob" type="date" required>
+            </div>
+            <div class="field">
+              <label for="reg-phone">Phone Number</label>
+              <input id="reg-phone" type="tel" required>
+            </div>
+            <div class="field">
+              <label for="reg-email">Email Address</label>
+              <input id="reg-email" type="email" required>
+            </div>
+            <div class="field">
+              <label for="reg-occupation">Occupation</label>
+              <input id="reg-occupation" type="text">
+            </div>
+            <div class="field full">
+              <label for="reg-address">Residential Address</label>
+              <input id="reg-address" type="text" required>
+            </div>
+            <div class="field">
+              <label for="reg-kin">Next of Kin</label>
+              <input id="reg-kin" type="text">
+            </div>
+            <div class="field">
+              <label for="reg-date-joined">Date Joined</label>
+              <input id="reg-date-joined" type="date">
+            </div>
+            <div class="field full">
+              <label>Savings Frequency</label>
+              <div class="field-radio-group">
+                <label class="field-radio"><input type="radio" name="savings-freq" value="Daily"> Daily</label>
+                <label class="field-radio"><input type="radio" name="savings-freq" value="Weekly"> Weekly</label>
+                <label class="field-radio"><input type="radio" name="savings-freq" value="Monthly"> Monthly</label>
+                <label class="field-radio"><input type="radio" name="savings-freq" value="Occasionally"> Occasionally</label>
+              </div>
+            </div>
+            <div class="field full">
+              <label for="reg-remarks">Remarks</label>
+              <textarea id="reg-remarks" rows="3"></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary form-submit">Create Account</button>
+          <p class="form-note">Registration requires a one-time ₦5,000 early registration fee. You'll receive next steps by email after submitting.</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="member-panel" id="login">
+      <div class="form-card" style="max-width:440px;">
+        <span class="eyebrow">Personal Login</span>
+        <h3 style="margin-top:10px;">Welcome back, partner</h3>
+        <form data-demo-form style="margin-top:28px; display:grid; gap:20px;">
+          <div class="field">
+            <label for="login-email">Email or Membership ID</label>
+            <input id="login-email" type="text" required>
+          </div>
+          <div class="field">
+            <label for="login-pass">Password</label>
+            <input id="login-pass" type="password" required>
+          </div>
+          <button type="submit" class="btn btn-primary form-submit">Log In to Dashboard</button>
+          <p class="form-note">Once logged in, you'll see your savings, share capital, investments, loan history and dividend history in one dashboard.</p>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">Smile<span style="color:var(--gold)">.</span></div>
+        <p style="color:rgba(251,246,234,0.6); font-size:0.9rem;">Your Smile remains Our Joy. Building Africa's largest and most trusted cooperative ecosystem.</p>
+      </div>
+      <div>
+        <h5>Explore</h5>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="products.html">Products</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Offices</h5>
+        <ul>
+          <li>Head Office - FF8, C.I. Abayomi Plaza, 2nd Gate, Army Barracks, Kurudu, Abuja.</li>
+          <li>Branch - Monaco Mall, close to NNPC Filling Station, Mararaba U-Turn, Abuja–Keffi Road, Nasarawa State.</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="tel:+2347046409000">+234 704 640 9000</a></li>
+          <li><a href="mailto:info@smile.com">info@smile.com</a></li>
+          <li><a href="contact.html">Send a message →</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Smile Multipurpose Cooperative Society Limited.</span>
+      <span>Registered Cooperative · NDPR Compliant</span>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
