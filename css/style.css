@@ -301,7 +301,7 @@ p { max-width: 60ch; }
 
 @media (max-width: 900px) {
   .hero .wrap { grid-template-columns: 1fr; }
-  .hero-visual { max-width: 340px; }
+  .hero-visual { max-width: 100%; }
 }
 
 /* Section spacing */
