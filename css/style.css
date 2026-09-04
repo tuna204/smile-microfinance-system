@@ -635,7 +635,7 @@ section { padding: 72px 0; }
 @media (max-width: 700px) {
   .photo-card { flex-direction: column; }
   .photo-card .pc-text { flex: 0 0 auto; }
-  .photo-card .pc-img { flex: 1 1 auto; min-height: 200px; width: 100%; }
+  .photo-card .pc-img { flex: 1 1 auto; min-height: 200px; width: 80%; }
 }
 
 /* Pillar photo cards */
