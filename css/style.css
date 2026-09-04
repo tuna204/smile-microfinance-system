@@ -355,7 +355,7 @@ p { max-width: 60ch; }
   }
 
   .hero-image {
-    width: 80%;
+    width: 50%;
     height: 100%;
     object-fit: contain;
     object-position: 50% 20%;
