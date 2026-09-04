@@ -352,13 +352,15 @@ p { max-width: 60ch; }
     height: 320px;
     min-height: 0;
     aspect-ratio: auto;
+    align-items: center;
+    justify-content: center;
   }
 
   .hero-image {
     width: 50%;
     height: 100%;
-    object-fit: contain;
-    object-position: 50% 20%;
+    object-fit: cover;
+    object-position: center;
     border-radius: var(--radius);
   }
 }
