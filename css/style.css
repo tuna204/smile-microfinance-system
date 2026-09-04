@@ -284,7 +284,8 @@ p { max-width: 60ch; }
   padding: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
   width: 100%;
   aspect-ratio: 16 / 10;
