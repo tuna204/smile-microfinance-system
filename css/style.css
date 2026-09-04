@@ -325,9 +325,9 @@ p { max-width: 60ch; }
 }
 
 .hero-image {
-  width: 100%;
+  width: 85%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   border-radius: var(--radius);
 }
