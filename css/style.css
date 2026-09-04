@@ -83,7 +83,7 @@ p { max-width: 60ch; }
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font-weight: 700;
+  font-weight: bold;
 }
 
 .eyebrow::before {
