@@ -358,7 +358,7 @@ p { max-width: 60ch; }
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center top;
+    object-position: 50% 20%;
     border-radius: var(--radius);
   }
 }
