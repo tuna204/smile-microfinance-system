@@ -86,6 +86,10 @@ p { max-width: 60ch; }
   font-weight: bold;
 }
 
+.welcome {
+   background: #FFFFFF;
+}
+
 .eyebrow::before {
   content: '';
   width: 22px;
