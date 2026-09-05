@@ -250,7 +250,15 @@ p { max-width: 60ch; }
     radial-gradient(circle at 10% 90%, rgba(63,125,107,0.35), transparent 50%);
   pointer-events: none;
 }
-.hero .wrap { position: relative; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 60px; align-items: center; }
+.hero .wrap {
+    width: min(1200px, 92%);
+    margin: 0 auto;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(30px, 5vw, 70px);
+}
 .hero h1 { color: var(--paper); }
 .hero h1 em { font-style: italic; color: var(--gold); }
 .hero p.lede {
