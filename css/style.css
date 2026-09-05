@@ -397,62 +397,54 @@ p { max-width: 60ch; }
 /* ================================
    MOBILE
 ================================ */
-
 @media (max-width: 600px) {
 
     .hero .wrap {
         width: calc(100% - 32px);
-
         display: flex;
         flex-direction: column;
-
         align-items: stretch;
-
         gap: 30px;
     }
 
     .hero-visual {
         order: 2;
-
         width: 100%;
-        height: 380px;
-
+        height: auto;
         min-height: 0;
         max-height: none;
-
         aspect-ratio: auto;
-
+        overflow: hidden;
         border-radius: var(--radius);
     }
 
     .hero-image {
         width: 100%;
-        height: 100%;
-
-        object-fit: cover;
-
-        /*
-         * Change this if the woman's face
-         * needs to move higher/lower.
-         */
-        object-position: center center;
+        height: auto;
+        display: block;
+        object-fit: contain;
+        object-position: center;
     }
 }
+
 
 /* ================================
    SMALL PHONES
 ================================ */
-
 @media (max-width: 400px) {
 
     .hero .wrap {
         width: calc(100% - 24px);
-
         gap: 24px;
     }
 
     .hero-visual {
-        height: 330px;
+        height: auto;
+    }
+
+    .hero-image {
+        width: 100%;
+        height: auto;
     }
 }
 
