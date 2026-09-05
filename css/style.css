@@ -422,6 +422,7 @@ p { max-width: 60ch; }
     object-position: center top;
   }
 }
+
 /* Section spacing */
 section { padding: 72px 0; }
 .section-head { max-width: 640px; margin-bottom: 52px; }
