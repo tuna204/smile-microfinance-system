@@ -276,20 +276,31 @@ p { max-width: 60ch; }
   font-size: 0.82rem;
   color: rgba(251,246,234,0.65);
 }
+
 .hero-visual {
-  position: relative;
-  border-radius: var(--radius);
-  background: linear-gradient(155deg, var(--emerald-light), var(--emerald));
-  border: 1px solid rgba(251,246,234,0.15);
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  height: 60vh;
+    position: relative;
+
+    width: 100%;
+    min-width: 0;
+
+    height: clamp(420px, 60vh, 650px);
+
+    overflow: hidden;
+
+    border-radius: var(--radius);
+
+    background:
+        linear-gradient(
+            155deg,
+            var(--emerald-light),
+            var(--emerald)
+        );
+
+    border: 1px solid rgba(251, 246, 234, 0.15);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .hero-visual .card-top {
@@ -325,130 +336,117 @@ p { max-width: 60ch; }
 }
 
 .hero-image {
-  width: 100%;
-  height: 100%;
-  min-height: 30vh;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-  border-radius: var(--radius);
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    min-width: 0;
+    min-height: 0;
+
+    object-fit: cover;
+    object-position: center center;
+
+    border-radius: var(--radius);
 }
 
 
-/* =========================
-   TABLET + MOBILE
-   ========================= */
+/* ================================
+   TABLET
+================================ */
 
 @media (max-width: 900px) {
 
-  .hero .wrap {
-    display: flex;
-    flex-direction: column;
-  }
+    .hero .wrap {
+        width: min(94%, 700px);
 
-  .hero-visual {
-    width: 100%;
-    max-width: 100%;
-    height: 420px;
-    min-height: 0;
-    aspect-ratio: auto;
-    order: 2;
-  }
+        display: flex;
+        flex-direction: column;
 
-  .hero-image {
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    object-fit: cover;
-    object-position: center top;
-  }
+        align-items: stretch;
+        gap: 40px;
+    }
+
+    .hero-visual {
+        order: 2;
+
+        width: 100%;
+        height: 500px;
+
+        min-height: 0;
+        max-height: none;
+    }
+
+    .hero-image {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+        object-position: center center;
+    }
 }
 
+/* ================================
+   MOBILE
+================================ */
 
-/* =========================
-   SMALL MOBILE
-   ========================= */
+@media (max-width: 600px) {
 
-@media (max-width: 700px) {
+    .hero .wrap {
+        width: calc(100% - 32px);
 
-  .hero .wrap {
-    display: flex;
-    flex-direction: column;
-  }
+        display: flex;
+        flex-direction: column;
 
-  .hero-visual {
-    width: 100%;
-    height: 320px;
-    min-height: 0;
-    aspect-ratio: auto;
-    order: 2;
-  }
+        align-items: stretch;
 
-  .hero-image {
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    object-fit: cover;
-    object-position: center top;
-  }
+        gap: 30px;
+    }
+
+    .hero-visual {
+        order: 2;
+
+        width: 100%;
+        height: 380px;
+
+        min-height: 0;
+        max-height: none;
+
+        aspect-ratio: auto;
+
+        border-radius: var(--radius);
+    }
+
+    .hero-image {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+
+        /*
+         * Change this if the woman's face
+         * needs to move higher/lower.
+         */
+        object-position: center center;
+    }
 }
 
+/* ================================
+   SMALL PHONES
+================================ */
 
-/* =========================
-   PHYSICAL TOUCH DEVICES
-   ========================= */
+@media (max-width: 400px) {
 
-@media (hover: none) and (pointer: coarse) {
+    .hero .wrap {
+        width: calc(100% - 24px);
 
-  .hero .wrap {
-    display: flex;
-    flex-direction: column;
-  }
+        gap: 24px;
+    }
 
-  .hero-visual {
-    width: 100%;
-    max-width: 100%;
-    height: 320px;
-    min-height: 0;
-    aspect-ratio: auto;
-    order: 2;
-  }
-
-  .hero-image {
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    object-fit: cover;
-    object-position: center top;
-  }
+    .hero-visual {
+        height: 330px;
+    }
 }
-
-/* =========================================
-   PHONE / MOBILE LAYOUT
-   ========================================= */
-
-.mobile-device .hero .wrap {
-  display: flex;
-  flex-direction: column;
-}
-
-.mobile-device .hero-visual {
-  width: 100%;
-  max-width: 100%;
-  height: 320px;
-  min-height: 0;
-  aspect-ratio: auto;
-  order: 2;
-}
-
-.mobile-device .hero-image {
-  width: 100%;
-  height: 100%;
-  min-height: 0;
-  object-fit: cover;
-  object-position: center top;
-}
-
 
 /* Section spacing */
 section { padding: 72px 0; }
