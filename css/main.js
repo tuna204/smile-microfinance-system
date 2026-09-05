@@ -53,13 +53,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-
-    const isPhone =
-        /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
-        navigator.maxTouchPoints > 1;
-
-    if (isPhone) {
-        document.body.classList.add("mobile-device");
-    }
-
+    document.body.style.background = "red";
 });
