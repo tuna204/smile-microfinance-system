@@ -419,7 +419,7 @@ p { max-width: 60ch; }
     }
 
     .hero-image {
-        width: 100%;
+        width: 80%;
         height: auto;
         display: block;
         object-fit: contain;
