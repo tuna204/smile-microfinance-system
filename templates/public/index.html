@@ -3,30 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smile Multipurpose Cooperative Society Limited — Your Smile, Our Joy</title>
+<title>Smile Multipurpose Cooperative Society Limited - Your Smile, Our Joy</title>
 <meta name="description" content="Nigeria's leading digital multipurpose cooperative. Save, borrow and invest with Smile — building Africa's largest financial ecosystem.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <header class="site-header">
   <div class="wrap">
-    <a href="{{ url_for('public.index') }}" class="logo">Smile<span>.</span></a>
+    <a href="index.html" class="logo">Smile<span>.</span></a>
     <nav>
       <ul class="nav-links">
-        <li><a href="{{ url_for('public.about') }}">About</a></li>
-        <li><a href="{{ url_for('public.products') }}">Products</a></li>
-        <li><a href="{{ url_for('public.how_it_works') }}">How It Works</a></li>
-        <li><a href="{{ url_for('public.faq') }}">FAQ</a></li>
-        <li><a href="{{ url_for('public.contact') }}">Contact</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="https://mysmile.ng/works.html">How It Works</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
     </nav>
     <div class="nav-cta">
-      <a href="{{ url_for('public.membership') }}#login" class="btn btn-ghost">Member Login</a>
-      <a href="{{ url_for('public.membership') }}#register" class="btn btn-primary">Join Smile</a>
+      <a href="membership.html#login" class="btn btn-ghost">Member Login</a>
+      <a href="membership.html#register" class="btn btn-primary">Join Smile</a>
     </div>
     <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -34,31 +34,66 @@
   </div>
 </header>
 
-<!-- HERO -->
 <section class="hero">
-  <div class="wrap">
-    <div>
-      <span class="eyebrow" style="color:var(--gold-dim)">Nigeria's Digital Multipurpose Cooperative</span>
-      <h1>Building wealth, <em>one smile</em> at a time.</h1>
-      <p class="lede">Save consistently, borrow affordably, and invest with confidence. At Smile, you're not a customer — you're a partner in Africa's most trusted cooperative ecosystem.</p>
-      <div class="hero-actions">
-        <a href="{{ url_for('public.membership') }}#register" class="btn btn-primary">Start Your Membership</a>
-        <a href="{{ url_for('public.how_it_works') }}" class="btn btn-on-dark">See How It Works</a>
-      </div>
-      <div class="hero-stats">
-        <div class="hero-stat"><span class="num">7</span><span class="label">Ecosystem pillars</span></div>
-        <div class="hero-stat"><span class="num">2%</span><span class="label">Returns per tenor</span></div>
-        <div class="hero-stat"><span class="num">₦5,000</span><span class="label">Early registration</span></div>
-      </div>
+    <div class="wrap">
+
+        <div>
+            <span class="eyebrow">
+                Nigeria's Digital Multipurpose Cooperative
+            </span>
+
+            <h1>
+                Building wealth,
+                <em>one smile</em> at a time.
+            </h1>
+
+            <p class="lede">
+                Save consistently, borrow affordably, and invest with confidence.
+                At Smile, you're not a customer - you're a partner in Africa's
+                most trusted cooperative ecosystem.
+            </p>
+
+            <div class="hero-actions">
+                <a href="membership.html#register" class="btn btn-primary">
+                    Start Your Membership
+                </a>
+
+                <a href="how-it-works.html" class="btn btn-on-dark">
+                    See How It Works
+                </a>
+            </div>
+
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="num">7</span>
+                    <span class="label">Pillars</span>
+                </div>
+
+                <div class="hero-stat">
+                    <span class="num">2%</span>
+                    <span class="label">Returns per tenor</span>
+                </div>
+
+                <div class="hero-stat">
+                    <span class="num">₦5,000</span>
+                    <span class="label">Early registration</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <img
+                src="images/hero_woman.jpg"
+                alt="Happy Smile cooperative member"
+                class="hero-image"
+            >
+        </div>
+
     </div>
-    <div class="hero-photo">
-      <img src="{{ url_for('static', filename='images/') }}hero_woman.png" alt="Smile Cooperative member, smiling with arms folded">
-    </div>
-  </div>
 </section>
 
 <!-- WELCOME / ABOUT -->
-<section>
+<section calss="welcome">
   <div class="wrap welcome-grid">
     <div>
       <span class="eyebrow">Who We Are</span>
@@ -66,7 +101,7 @@
     </div>
     <div>
       <p>Smile Multipurpose Cooperative Society Limited is a legally registered cooperative built to empower people through savings, affordable financing, investments, and sustainable development.</p>
-      <p>Through our flagship initiative, <strong>Smile World</strong>, we're building one of Africa's most comprehensive cooperative ecosystems — spanning finance, agriculture, housing, health, travel, technology and education.</p>
+      <p>Through our flagship initiative, <strong>Smile World</strong>, we're building one of Africa's most comprehensive cooperative ecosystems - spanning finance, agriculture, housing, health, travel, technology and education.</p>
       <ul class="pillar-mini-list">
         <li>Ethics, Empathy, Excellence &amp; Innovation</li>
         <li>Regulated, secure member data handling</li>
@@ -88,7 +123,7 @@
       <div class="card">
         <div class="icon-num">01</div>
         <h4>Safe Savings</h4>
-        <p>Daily, weekly, monthly or occasional — save on your own terms.</p>
+        <p>Daily, weekly, monthly or occasional - save on your own terms.</p>
       </div>
       <div class="card">
         <div class="icon-num">02</div>
@@ -103,7 +138,7 @@
       <div class="card">
         <div class="icon-num">04</div>
         <h4>Digital &amp; Secure</h4>
-        <p>NDPR-compliant, encrypted, and built for the way you already bank.</p>
+        <p>Encrypted, and built for the way you already bank.</p>
       </div>
     </div>
   </div>
@@ -123,7 +158,7 @@
           <h4>Save <em>Smarter</em></h4>
           <p>Flexible savings plans that fit your lifestyle and future goals — daily, monthly, target and fixed deposits.</p>
         </div>
-        <div class="pc-img"><img src="{{ url_for('static', filename='images/') }}save_smarter_man.png" alt="Member checking his savings on his phone"></div>
+        <div class="pc-img"><img src="images/save_smarter_man.png" alt="Member checking his savings on his phone"></div>
       </div>
       <div class="photo-card">
         <div class="pc-text">
@@ -131,7 +166,7 @@
           <h4>Borrow <em>with Ease</em></h4>
           <p>Affordable loans designed to support your needs and aspirations — personal, SME, business and agricultural.</p>
         </div>
-        <div class="pc-img"><img src="{{ url_for('static', filename='images/') }}borrow_woman.png" alt="Small business owner who financed her shop with a Smile loan"></div>
+        <div class="pc-img"><img src="images/borrow_woman.png" alt="Small business owner who financed her shop with a Smile loan"></div>
       </div>
       <div class="photo-card">
         <div class="pc-text">
@@ -139,7 +174,7 @@
           <h4>Invest <em>Wisely</em></h4>
           <p>Grow your wealth with secure, asset-backed investment opportunities across 3, 6 and 12-month tenors.</p>
         </div>
-        <div class="pc-img"><img src="{{ url_for('static', filename='images/') }}invest_couple.png" alt="Couple reviewing their investment growth together"></div>
+        <div class="pc-img"><img src="images/invest_couple.png" alt="Couple reviewing their investment growth together"></div>
       </div>
     </div>
   </div>
@@ -171,7 +206,7 @@
       </div>
     </div>
     <div style="margin-top:36px">
-      <a href="{{ url_for('public.how_it_works') }}" class="btn btn-ghost">See the full process →</a>
+      <a href="how-it-works.html" class="btn btn-ghost">See the full process →</a>
     </div>
   </div>
 </section>
@@ -185,7 +220,7 @@
     </div>
     <div class="grid-4">
       <div class="pillar-photo-card">
-        <img src="{{ url_for('static', filename='images/') }}agriculture_man.png" alt="Farmer supported by Smile's agriculture pillar">
+        <img src="images/agriculture_man.png" alt="Farmer supported by Smile's agriculture pillar">
         <div class="pp-overlay">
           <div class="pp-icon">01</div>
           <h4>Agriculture</h4>
@@ -193,7 +228,7 @@
         </div>
       </div>
       <div class="pillar-photo-card">
-        <img src="{{ url_for('static', filename='images/') }}housing_family.png" alt="Family in front of a home supported by Smile's housing pillar">
+        <img src="images/housing_family.png" alt="Family in front of a home supported by Smile's housing pillar">
         <div class="pp-overlay">
           <div class="pp-icon">02</div>
           <h4>Housing</h4>
@@ -201,7 +236,7 @@
         </div>
       </div>
       <div class="pillar-photo-card">
-        <img src="{{ url_for('static', filename='images/') }}healthcare_doc.png" alt="Healthcare professional supported by Smile's healthcare pillar">
+        <img src="images/healthcare_doc.png" alt="Healthcare professional supported by Smile's healthcare pillar">
         <div class="pp-overlay">
           <div class="pp-icon">03</div>
           <h4>Healthcare</h4>
@@ -209,19 +244,37 @@
         </div>
       </div>
       <div class="pillar-photo-card">
-        <img src="{{ url_for('static', filename='images/') }}education_woman.png" alt="Student supported by Smile's education pillar">
+        <img src="images/education_woman.png" alt="Student supported by Smile's education pillar">
         <div class="pp-overlay">
           <div class="pp-icon">04</div>
           <h4>Education</h4>
           <p>Building brighter futures through knowledge and learning.</p>
         </div>
       </div>
-    </div>
-    <div style="margin-top:20px; display:flex; gap:14px; flex-wrap:wrap;">
-      <span class="eyebrow" style="color:var(--gold-dim)">Also part of the ecosystem:</span>
-      <span class="eyebrow" style="color:rgba(251,246,234,0.7)">Finance</span>
-      <span class="eyebrow" style="color:rgba(251,246,234,0.7)">Travels &amp; Transportation</span>
-      <span class="eyebrow" style="color:rgba(251,246,234,0.7)">Technology</span>
+      <div class="pillar-photo-card">
+        <img src="images/money.png" alt="Student supported by Smile's education pillar">
+        <div class="pp-overlay">
+          <div class="pp-icon">05</div>
+          <h4>Finance</h4>
+          <p>Building financial security for you and your family.</p>
+        </div>
+      </div>
+      <div class="pillar-photo-card">
+        <img src="images/travel.jpg" alt="Student supported by Smile's education pillar">
+        <div class="pp-overlay">
+          <div class="pp-icon">06</div>
+          <h4>Travels &amp; Transportation</h4>
+          <p>Connecting people and places through reliable travel solutions.</p>
+        </div>
+      </div>
+      <div class="pillar-photo-card">
+        <img src="images/tecch.jpg" alt="Student supported by Smile's education pillar">
+        <div class="pp-overlay">
+          <div class="pp-icon">07</div>
+          <h4>Technology</h4>
+          <p>Embracing innovation to drive progress and efficiency.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -256,7 +309,7 @@
     <div class="cta-band">
       <h2>Ready to build your wealth?</h2>
       <p>Join thousands of partners already saving, borrowing and investing with Smile.</p>
-      <a href="{{ url_for('public.membership') }}#register" class="btn btn-primary">Create Your Account</a>
+      <a href="membership.html#register" class="btn btn-primary">Create Your Account</a>
     </div>
   </div>
 </section>
@@ -271,17 +324,17 @@
       <div>
         <h5>Explore</h5>
         <ul>
-          <li><a href="{{ url_for('public.about') }}">About Us</a></li>
-          <li><a href="{{ url_for('public.products') }}">Products</a></li>
-          <li><a href="{{ url_for('public.how_it_works') }}">How It Works</a></li>
-          <li><a href="{{ url_for('public.faq') }}">FAQ</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="products.html">Products</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="faq.html">FAQ</a></li>
         </ul>
       </div>
       <div>
         <h5>Offices</h5>
         <ul>
-          <li>Head Office — Kurudu, Abuja</li>
-          <li>Branch — Mararaba, Nasarawa</li>
+          <li>Head Office - FF8, C.I. Abayomi Plaza, 2nd Gate, Army Barracks, Kurudu, Abuja.</li>
+          <li>Branch - Monaco Mall, close to NNPC Filling Station, Mararaba U-Turn, Abuja–Keffi Road, Nasarawa State.</li>
         </ul>
       </div>
       <div>
@@ -289,17 +342,16 @@
         <ul>
           <li><a href="tel:+2347046409000">+234 704 640 9000</a></li>
           <li><a href="mailto:info@smile.com">info@smile.com</a></li>
-          <li><a href="{{ url_for('public.contact') }}">Send a message →</a></li>
+          <li><a href="contact.html">Send a message →</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© 2026 Smile Multipurpose Cooperative Society Limited.</span>
-      <span>Registered Cooperative · NDPR Compliant</span>
     </div>
   </div>
 </footer>
 
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
