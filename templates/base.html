@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Smile Cooperative{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="{{ url_for('public.index') }}" class="logo">Smile<span>.</span></a>
+    <nav>
+      <ul class="nav-links">
+        {% if current_user.is_authenticated %}
+          <li><a href="{{ url_for('dashboard.home') }}">Dashboard</a></li>
+          {% if current_user.is_admin() %}
+            <li><a href="{{ url_for('admin.home') }}">Admin</a></li>
+          {% endif %}
+        {% endif %}
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      {% if current_user.is_authenticated %}
+        <span class="app-user-chip">{{ current_user.full_name }}</span>
+        <a href="{{ url_for('public.membership') }}#login" class="btn btn-ghost">Log Out</a>
+      {% else %}
+        <a href="{{ url_for('public.membership') }}#login" class="btn btn-ghost">Member Login</a>
+        <a href="{{ url_for('public.membership') }}#register" class="btn btn-primary">Join Smile</a>
+      {% endif %}
+    </div>
+  </div>
+</header>
+
+<main class="app-shell">
+  <div class="wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="app-flash-stack">
+          {% for category, message in messages %}
+            <div class="app-flash app-flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </div>
+</main>
+
+</body>
+</html>
