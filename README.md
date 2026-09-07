@@ -1,6 +1,6 @@
-# Smile Cooperative — Backend (Flask)
+# Smile Cooperative - Backend (Flask)
 
-## Payment reconciliation — how it actually works
+## Payment reconciliation - how it actually works
 
 A payment-gateway virtual-account approach was the first design, but it
 was dropped: it requires Paystack (or similar) business KYC approval,
