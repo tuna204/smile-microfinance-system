@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Register — Smile Cooperative{% endblock %}
+{% block content %}
+<h2>Create your account</h2>
+<form method="POST">
+  <label>Full Name<input type="text" name="full_name" required></label>
+  <label>Gender
+    <select name="gender">
+      <option>Female</option>
+      <option>Male</option>
+    </select>
+  </label>
+  <label>Phone Number<input type="tel" name="phone" required></label>
+  <label>Email Address<input type="email" name="email" required></label>
+  <label>Residential Address<input type="text" name="residential_address"></label>
+  <label>Occupation<input type="text" name="occupation"></label>
+  <label>Next of Kin<input type="text" name="next_of_kin"></label>
+  <label>Savings Frequency
+    <select name="savings_frequency">
+      <option>Daily</option>
+      <option>Weekly</option>
+      <option>Monthly</option>
+      <option>Occasionally</option>
+    </select>
+  </label>
+  <label>Password<input type="password" name="password" required></label>
+  <button type="submit">Create Account</button>
+</form>
+<p>Already a member? <a href="{{ url_for('auth.login') }}">Log in</a></p>
+{% endblock %}
