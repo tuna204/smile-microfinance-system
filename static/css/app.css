@@ -1,1 +1,203 @@
+/* ============================================
+   SMILE COOPERATIVE — APP SHELL (dashboard/admin)
+   Extends the tokens/components already defined in style.css.
+   ============================================ */
 
+.app-shell {
+  min-height: calc(100vh - 80px);
+  padding: 48px 0 80px;
+}
+
+.app-user-chip {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--teal);
+  margin-right: 4px;
+}
+
+/* Flash messages */
+.app-flash-stack { display: grid; gap: 10px; margin-bottom: 28px; }
+.app-flash {
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 500;
+}
+.app-flash-error { background: #FDE4E1; color: #8A2A20; }
+.app-flash-success { background: #E1F5E4; color: #205A2A; }
+.app-flash-info { background: #E4EEFD; color: #204488; }
+
+/* Page header */
+.app-page-head { margin-bottom: 36px; }
+.app-page-head h1 { font-size: var(--step-2); }
+.app-page-head p { color: #4A4838; margin-top: 6px; }
+
+/* Profile header */
+.app-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+.app-profile-photo {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--gold);
+  flex-shrink: 0;
+}
+.app-profile-initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--emerald);
+  color: var(--gold);
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+.app-profile-name { font-size: var(--step-1); margin-bottom: 2px; }
+.app-profile-email { color: #4A4838; font-size: 0.9rem; margin-bottom: 4px; }
+
+/* Balance hero card */
+.app-balance-card {
+  background: var(--emerald);
+  color: var(--paper);
+  border-radius: var(--radius);
+  padding: 36px;
+  margin-bottom: 32px;
+  position: relative;
+  overflow: hidden;
+}
+.app-balance-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 90% 10%, rgba(239,163,11,0.18), transparent 50%);
+  pointer-events: none;
+}
+.app-balance-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+}
+.app-balance-amount {
+  font-family: var(--font-mono);
+  font-size: clamp(2rem, 1.7rem + 1.5vw, 3rem);
+  color: var(--paper);
+  margin-top: 8px;
+}
+.app-balance-sub {
+  color: rgba(251,246,234,0.7);
+  font-size: 0.88rem;
+  margin-top: 10px;
+}
+.app-membership-no {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: rgba(251,246,234,0.6);
+}
+
+/* Pay-in instructions box */
+.app-payin-box {
+  background: var(--paper-dim);
+  border-radius: var(--radius);
+  padding: 22px 26px;
+  margin-bottom: 32px;
+}
+.app-payin-box strong { color: var(--emerald); }
+.app-payin-ref {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  color: var(--emerald);
+  background: var(--white);
+  border: 1px dashed var(--gold);
+  border-radius: 8px;
+  padding: 8px 14px;
+  display: inline-block;
+  margin: 8px 0;
+  letter-spacing: 0.02em;
+}
+.app-payin-box .form-note { margin-top: 8px; }
+
+/* Section headers within the dashboard */
+.app-section { margin-bottom: 40px; }
+.app-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.app-section-head h3 { font-size: var(--step-1); }
+
+/* Data list rows (loans, investments, transactions) */
+.app-list { display: grid; gap: 10px; }
+.app-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+.app-row-main { display: flex; flex-direction: column; gap: 2px; }
+.app-row-title { font-weight: 600; color: var(--ink); font-size: 0.95rem; }
+.app-row-sub { font-size: 0.82rem; color: #7A7864; }
+.app-row-amount {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--emerald);
+  white-space: nowrap;
+}
+.app-empty {
+  color: #7A7864;
+  font-size: 0.9rem;
+  padding: 20px;
+  text-align: center;
+  background: var(--paper-dim);
+  border-radius: 12px;
+}
+
+/* Status pills */
+.app-pill {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.app-pill-pending { background: #FDF0D5; color: #8A5A00; }
+.app-pill-approved, .app-pill-active, .app-pill-reflected { background: #E1F5E4; color: #205A2A; }
+.app-pill-rejected, .app-pill-closed { background: #FDE4E1; color: #8A2A20; }
+.app-pill-disbursed, .app-pill-reviewed { background: #E4EEFD; color: #204488; }
+
+/* Admin-specific */
+.app-stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 36px; }
+.app-stat-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+.app-stat-card .num { font-family: var(--font-mono); font-size: 2rem; color: var(--emerald); display: block; }
+.app-stat-card .label { font-size: 0.85rem; color: #7A7864; margin-top: 4px; }
+
+.app-form-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 32px;
+  max-width: 480px;
+}
+
+@media (max-width: 700px) {
+  .app-stat-grid { grid-template-columns: 1fr; }
+  .app-row { flex-direction: column; align-items: flex-start; }
+}
