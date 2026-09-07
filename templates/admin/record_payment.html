@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Record Payment — Smile Cooperative{% endblock %}
+{% block content %}
+
+<div class="app-page-head">
+  <span class="eyebrow">Staff Area</span>
+  <h1>Record a Payment</h1>
+  <p>Use this when a member has transferred to the company bank account with their membership number as the transfer description. Confirming here updates their dashboard balance and sends them an email/SMS immediately.</p>
+</div>
+
+<div class="app-form-card">
+  <form method="POST">
+    <div class="field" style="margin-bottom:18px;">
+      <label for="membership_no">Membership Number</label>
+      <input type="text" id="membership_no" name="membership_no" placeholder="SM-2026-XXXXX" required>
+    </div>
+    <div class="field" style="margin-bottom:18px;">
+      <label for="amount">Amount (₦)</label>
+      <input type="number" id="amount" name="amount" step="0.01" min="0.01" required>
+    </div>
+    <div class="field" style="margin-bottom:22px;">
+      <label for="narration">Note (optional)</label>
+      <input type="text" id="narration" name="narration" placeholder="e.g. GTBank transfer, 30 Aug">
+    </div>
+    <button type="submit" class="btn btn-primary">Confirm Payment</button>
+  </form>
+</div>
+
+<p style="margin-top:24px;"><a href="{{ url_for('admin.home') }}">&larr; Back to admin overview</a></p>
+
+{% endblock %}

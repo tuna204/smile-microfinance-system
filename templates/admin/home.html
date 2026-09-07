@@ -1,1 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Admin — Smile Cooperative{% endblock %}
+{% block content %}
 
+<div class="app-page-head">
+  <span class="eyebrow">Staff Area</span>
+  <h1>Admin Overview</h1>
+</div>
+
+<div class="app-stat-grid">
+  <div class="app-stat-card">
+    <span class="num">{{ members_count }}</span>
+    <span class="label">Total Members</span>
+  </div>
+  <div class="app-stat-card">
+    <span class="num">{{ pending_review|length }}</span>
+    <span class="label">Awaiting Review</span>
+  </div>
+  <div class="app-stat-card" style="display:flex; align-items:center; justify-content:center;">
+    <a href="{{ url_for('admin.record_payment') }}" class="btn btn-primary">+ Record a Payment</a>
+  </div>
+</div>
+
+<div class="app-section">
+  <div class="app-section-head">
+    <h3>Awaiting Review</h3>
+  </div>
+  <p style="color:#7A7864; font-size:0.9em; margin-bottom:16px;">These payments already reflect in the member's balance — this is an audit confirmation, not an approval gate.</p>
+
+  {% if pending_review %}
+    <div class="app-list">
+      {% for txn in pending_review %}
+        <div class="app-row">
+          <div class="app-row-main">
+            <span class="app-row-title">Member #{{ txn.member_id }}</span>
+            <span class="app-row-sub">{{ txn.created_at.strftime('%d %b %Y, %H:%M') }}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:14px;">
+            <span class="app-row-amount">₦{{ "{:,.2f}".format(txn.amount) }}</span>
+            <form method="POST" action="{{ url_for('admin.approve_review', txn_id=txn.id) }}">
+              <button type="submit" class="btn btn-ghost" style="padding:8px 16px; font-size:0.82rem;">Mark Reviewed</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="app-empty">Nothing waiting on review.</div>
+  {% endif %}
+</div>
+
+{% endblock %}
