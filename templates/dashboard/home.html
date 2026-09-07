@@ -1,1 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Smile Cooperative{% endblock %}
+{% block content %}
 
+<div class="app-profile-card">
+  {% if member.passport_photo_url %}
+    <img src="{{ member.passport_photo_url }}" alt="{{ member.full_name }}" class="app-profile-photo">
+  {% else %}
+    <div class="app-profile-photo app-profile-initials">{{ member.full_name[0]|upper }}</div>
+  {% endif %}
+  <div>
+    <h1 class="app-profile-name">{{ member.full_name }}</h1>
+    <p class="app-profile-email">{{ member.email }}</p>
+    <span class="app-membership-no">{{ member.membership_no }}</span>
+  </div>
+</div>
+
+<div class="app-balance-card">
+  <div class="app-balance-label">Savings Balance</div>
+  <div class="app-balance-amount">₦{{ "{:,.2f}".format(balance) }}</div>
+</div>
+
+<div class="app-section">
+  <div class="app-section-head">
+    <h3>Add Money</h3>
+  </div>
+  <div class="app-form-card">
+    <form method="POST" action="{{ url_for('dashboard.request_deposit') }}" style="display:flex; gap:12px; align-items:end; flex-wrap:wrap;">
+      <div class="field" style="flex:1; min-width:200px; margin-bottom:0;">
+        <label for="amount">How much do you want to save?</label>
+        <input type="number" id="amount" name="amount" step="0.01" min="1" placeholder="e.g. 10000" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Generate Payment Details</button>
+    </form>
+  </div>
+
+  {% if pending_requests %}
+    <div style="margin-top:20px;">
+      <p style="font-size:0.9rem; color:#4A4838; margin-bottom:12px;">Transfer any of these amounts to the account below, using your membership number as the description:</p>
+      <div class="app-payin-box">
+        <div class="app-payin-ref">{{ member.membership_no }}</div>
+        <p class="form-note">[Company bank account name / number / bank go here]</p>
+      </div>
+      <div class="app-list" style="margin-top:14px;">
+        {% for req in pending_requests %}
+          <div class="app-row">
+            <div class="app-row-main">
+              <span class="app-row-title">Requested to save ₦{{ "{:,.2f}".format(req.amount) }}</span>
+              <span class="app-row-sub">{{ req.created_at.strftime('%d %b %Y') }}</span>
+            </div>
+            <span class="app-pill app-pill-pending">Awaiting transfer</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<div class="app-section">
+  <div class="app-section-head">
+    <h3>Loans</h3>
+  </div>
+  {% if loans %}
+    <div class="app-list">
+      {% for loan in loans %}
+        <div class="app-row">
+          <div class="app-row-main">
+            <span class="app-row-title">{{ loan.loan_type }}</span>
+            <span class="app-row-sub">Requested ₦{{ "{:,.2f}".format(loan.amount_requested) }}</span>
+          </div>
+          <span class="app-pill app-pill-{{ loan.status }}">{{ loan.status }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="app-empty">No loans yet.</div>
+  {% endif %}
+</div>
+
+<div class="app-section">
+  <div class="app-section-head">
+    <h3>Investments</h3>
+  </div>
+  {% if investments %}
+    <div class="app-list">
+      {% for inv in investments %}
+        <div class="app-row">
+          <div class="app-row-main">
+            <span class="app-row-title">₦{{ "{:,.2f}".format(inv.principal_amount) }} — {{ inv.tenor_months }} months</span>
+            <span class="app-row-sub">{{ inv.return_rate_percent }}% return</span>
+          </div>
+          <span class="app-pill app-pill-{{ inv.status }}">{{ inv.status }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="app-empty">No investments yet.</div>
+  {% endif %}
+</div>
+
+<div class="app-section">
+  <div class="app-section-head">
+    <h3>Recent Transactions</h3>
+  </div>
+  {% if transactions %}
+    <div class="app-list">
+      {% for txn in transactions %}
+        <div class="app-row">
+          <div class="app-row-main">
+            <span class="app-row-title">{{ txn.type.replace('_', ' ')|title }}</span>
+            <span class="app-row-sub">{{ txn.created_at.strftime('%d %b %Y') }}{% if txn.narration %} — {{ txn.narration }}{% endif %}</span>
+          </div>
+          <div style="text-align:right;">
+            <div class="app-row-amount">₦{{ "{:,.2f}".format(txn.amount) }}</div>
+            <span class="app-pill app-pill-{{ txn.status }}">{{ txn.status }}</span>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="app-empty">No transactions yet.</div>
+  {% endif %}
+</div>
+
+{% endblock %}
