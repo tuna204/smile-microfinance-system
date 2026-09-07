@@ -3,30 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Membership — Smile Multipurpose Cooperative</title>
+<title>Membership = Smile Multipurpose Cooperative</title>
 <meta name="description" content="Register as a new member or log in to your Smile Multipurpose Cooperative account.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <header class="site-header">
   <div class="wrap">
-    <a href="{{ url_for('public.index') }}" class="logo">Smile<span>.</span></a>
+    <a href="index.html" class="logo">Smile<span>.</span></a>
     <nav>
       <ul class="nav-links">
-        <li><a href="{{ url_for('public.about') }}">About</a></li>
-        <li><a href="{{ url_for('public.products') }}">Products</a></li>
-        <li><a href="{{ url_for('public.how_it_works') }}">How It Works</a></li>
-        <li><a href="{{ url_for('public.faq') }}">FAQ</a></li>
-        <li><a href="{{ url_for('public.contact') }}">Contact</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="https://mysmile.ng/works.html">How It Works</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
     </nav>
     <div class="nav-cta">
-      <a href="{{ url_for('public.membership') }}#login" class="btn btn-ghost">Member Login</a>
-      <a href="{{ url_for('public.membership') }}#register" class="btn btn-primary">Join Smile</a>
+      <a href="membership.html#login" class="btn btn-ghost">Member Login</a>
+      <a href="membership.html#register" class="btn btn-primary">Join Smile</a>
     </div>
     <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -55,24 +55,19 @@
       <div class="form-card">
         <span class="eyebrow">New Membership Registration</span>
         <h3 style="margin-top:10px;">Create your account</h3>
-        <form method="POST" action="{{ url_for('auth.register') }}" enctype="multipart/form-data" style="margin-top:28px;">
+        <form data-demo-form style="margin-top:28px;">
           <div class="form-grid">
             <div class="field full">
               <label for="reg-photo">Passport Photograph</label>
-              <div class="upload-box" id="reg-photo-box">
-                <img id="reg-photo-preview" style="display:none; max-height:120px; border-radius:8px; margin-bottom:8px;">
-                <span id="reg-photo-label">Click to upload a passport photograph</span>
-              </div>
-              <input type="file" id="reg-photo" name="passport_photo" accept="image/png, image/jpeg" style="display:none;">
-              <p class="form-note" style="margin-top:6px;">JPG or PNG, under 2MB.</p>
+              <div class="upload-box" id="reg-photo">Click to upload a passport photograph</div>
             </div>
             <div class="field">
               <label for="reg-name">Full Name</label>
-              <input id="reg-name" name="full_name" type="text" required>
+              <input id="reg-name" type="text" required>
             </div>
             <div class="field">
               <label for="reg-gender">Gender</label>
-              <select id="reg-gender" name="gender" required>
+              <select id="reg-gender" required>
                 <option value="">Select</option>
                 <option>Female</option>
                 <option>Male</option>
@@ -80,48 +75,44 @@
             </div>
             <div class="field">
               <label for="reg-dob">Date of Birth</label>
-              <input id="reg-dob" name="date_of_birth" type="date" required>
+              <input id="reg-dob" type="date" required>
             </div>
             <div class="field">
               <label for="reg-phone">Phone Number</label>
-              <input id="reg-phone" name="phone" type="tel" required>
+              <input id="reg-phone" type="tel" required>
             </div>
             <div class="field">
               <label for="reg-email">Email Address</label>
-              <input id="reg-email" name="email" type="email" required>
+              <input id="reg-email" type="email" required>
             </div>
             <div class="field">
               <label for="reg-occupation">Occupation</label>
-              <input id="reg-occupation" name="occupation" type="text">
+              <input id="reg-occupation" type="text">
             </div>
             <div class="field full">
               <label for="reg-address">Residential Address</label>
-              <input id="reg-address" name="residential_address" type="text" required>
+              <input id="reg-address" type="text" required>
             </div>
             <div class="field">
               <label for="reg-kin">Next of Kin</label>
-              <input id="reg-kin" name="next_of_kin" type="text">
+              <input id="reg-kin" type="text">
             </div>
             <div class="field">
-              <label for="reg-password">Password</label>
-              <input id="reg-password" name="password" type="password" required minlength="8">
-            </div>
-            <div class="field">
-              <label for="reg-confirm-password">Confirm Password</label>
-              <input id="reg-confirm-password" name="confirm_password" type="password" required minlength="8">
+              <label for="reg-date-joined">Date Joined</label>
+              <input id="reg-date-joined" type="date">
             </div>
             <div class="field full">
               <label>Savings Frequency</label>
               <div class="field-radio-group">
-                <label class="field-radio"><input type="radio" name="savings_frequency" value="Daily"> Daily</label>
-                <label class="field-radio"><input type="radio" name="savings_frequency" value="Weekly"> Weekly</label>
-                <label class="field-radio"><input type="radio" name="savings_frequency" value="Monthly"> Monthly</label>
-                <label class="field-radio"><input type="radio" name="savings_frequency" value="Occasionally"> Occasionally</label>
+                <label class="field-radio"><input type="radio" name="savings-freq" value="Daily"> Daily</label>
+                <label class="field-radio"><input type="radio" name="savings-freq" value="Weekly"> Weekly</label>
+                <label class="field-radio"><input type="radio" name="savings-freq" value="Monthly"> Monthly</label>
+                <label class="field-radio"><input type="radio" name="savings-freq" value="Occasionally"> Occasionally</label>
               </div>
             </div>
             <div class="field full">
               <label for="reg-remarks">Remarks</label>
-              <textarea id="reg-remarks" name="remarks" rows="3"></textarea>
+              <textarea id="reg-remarks" rows="3"></textarea>
             </div>
           </div>
           <button type="submit" class="btn btn-primary form-submit">Create Account</button>
@@ -135,14 +126,14 @@
       <div class="form-card" style="max-width:440px;">
         <span class="eyebrow">Personal Login</span>
         <h3 style="margin-top:10px;">Welcome back, partner</h3>
-        <form method="POST" action="{{ url_for('auth.login') }}" style="margin-top:28px; display:grid; gap:20px;">
+        <form data-demo-form style="margin-top:28px; display:grid; gap:20px;">
           <div class="field">
             <label for="login-email">Email or Membership ID</label>
-            <input id="login-email" name="identifier" type="text" required>
+            <input id="login-email" type="text" required>
           </div>
           <div class="field">
             <label for="login-pass">Password</label>
-            <input id="login-pass" name="password" type="password" required>
+            <input id="login-pass" type="password" required>
           </div>
           <button type="submit" class="btn btn-primary form-submit">Log In to Dashboard</button>
           <p class="form-note">Once logged in, you'll see your savings, share capital, investments, loan history and dividend history in one dashboard.</p>
@@ -163,17 +154,17 @@
       <div>
         <h5>Explore</h5>
         <ul>
-          <li><a href="{{ url_for('public.about') }}">About Us</a></li>
-          <li><a href="{{ url_for('public.products') }}">Products</a></li>
-          <li><a href="{{ url_for('public.how_it_works') }}">How It Works</a></li>
-          <li><a href="{{ url_for('public.faq') }}">FAQ</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="products.html">Products</a></li>
+          <li><a href="how-it-works.html">How It Works</a></li>
+          <li><a href="faq.html">FAQ</a></li>
         </ul>
       </div>
       <div>
         <h5>Offices</h5>
         <ul>
-          <li>Head Office — Kurudu, Abuja</li>
-          <li>Branch — Mararaba, Nasarawa</li>
+          <li>Head Office - FF8, C.I. Abayomi Plaza, 2nd Gate, Army Barracks, Kurudu, Abuja.</li>
+          <li>Branch - Monaco Mall, close to NNPC Filling Station, Mararaba U-Turn, Abuja–Keffi Road, Nasarawa State.</li>
         </ul>
       </div>
       <div>
@@ -181,17 +172,16 @@
         <ul>
           <li><a href="tel:+2347046409000">+234 704 640 9000</a></li>
           <li><a href="mailto:info@smile.com">info@smile.com</a></li>
-          <li><a href="{{ url_for('public.contact') }}">Send a message →</a></li>
+          <li><a href="contact.html">Send a message →</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© 2026 Smile Multipurpose Cooperative Society Limited.</span>
-      <span>Registered Cooperative · NDPR Compliant</span>
     </div>
   </div>
 </footer>
 
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
