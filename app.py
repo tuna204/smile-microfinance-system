@@ -17,6 +17,9 @@ def create_app():
     mail.init_app(app)
     migrate.init_app(app, db)
 
+    with app.app_context():
+        db.create_all()
+        
     @login_manager.user_loader
     def load_user(user_id):
         return Member.query.get(int(user_id))
