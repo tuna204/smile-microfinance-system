@@ -55,19 +55,24 @@
       <div class="form-card">
         <span class="eyebrow">New Membership Registration</span>
         <h3 style="margin-top:10px;">Create your account</h3>
-        <form data-demo-form style="margin-top:28px;">
+        <form method="POST" action="{{ url_for('auth.register') }}" enctype="multipart/form-data" style="margin-top:28px;">
           <div class="form-grid">
             <div class="field full">
               <label for="reg-photo">Passport Photograph</label>
-              <div class="upload-box" id="reg-photo">Click to upload a passport photograph</div>
+              <div class="upload-box" id="reg-photo-box">
+                <img id="reg-photo-preview" style="display:none; max-height:120px; border-radius:8px; margin-bottom:8px;">
+                <span id="reg-photo-label">Click to upload a passport photograph</span>
+              </div>
+              <input type="file" id="reg-photo" name="passport_photo" accept="image/png, image/jpeg" style="display:none;">
+              <p class="form-note" style="margin-top:6px;">JPG or PNG, under 2MB.</p>
             </div>
             <div class="field">
               <label for="reg-name">Full Name</label>
-              <input id="reg-name" type="text" required>
+              <input id="reg-name" name="full_name" type="text" required>
             </div>
             <div class="field">
               <label for="reg-gender">Gender</label>
-              <select id="reg-gender" required>
+              <select id="reg-gender" name="gender" required>
                 <option value="">Select</option>
                 <option>Female</option>
                 <option>Male</option>
@@ -75,44 +80,48 @@
             </div>
             <div class="field">
               <label for="reg-dob">Date of Birth</label>
-              <input id="reg-dob" type="date" required>
+              <input id="reg-dob" name="date_of_birth" type="date" required>
             </div>
             <div class="field">
               <label for="reg-phone">Phone Number</label>
-              <input id="reg-phone" type="tel" required>
+              <input id="reg-phone" name="phone" type="tel" required>
             </div>
             <div class="field">
               <label for="reg-email">Email Address</label>
-              <input id="reg-email" type="email" required>
+              <input id="reg-email" name="email" type="email" required>
             </div>
             <div class="field">
               <label for="reg-occupation">Occupation</label>
-              <input id="reg-occupation" type="text">
+              <input id="reg-occupation" name="occupation" type="text">
             </div>
             <div class="field full">
               <label for="reg-address">Residential Address</label>
-              <input id="reg-address" type="text" required>
+              <input id="reg-address" name="residential_address" type="text" required>
             </div>
             <div class="field">
               <label for="reg-kin">Next of Kin</label>
-              <input id="reg-kin" type="text">
+              <input id="reg-kin" name="next_of_kin" type="text">
             </div>
             <div class="field">
-              <label for="reg-date-joined">Date Joined</label>
-              <input id="reg-date-joined" type="date">
+              <label for="reg-password">Password</label>
+              <input id="reg-password" name="password" type="password" required minlength="8">
+            </div>
+            <div class="field">
+              <label for="reg-confirm-password">Confirm Password</label>
+              <input id="reg-confirm-password" name="confirm_password" type="password" required minlength="8">
             </div>
             <div class="field full">
               <label>Savings Frequency</label>
               <div class="field-radio-group">
-                <label class="field-radio"><input type="radio" name="savings-freq" value="Daily"> Daily</label>
-                <label class="field-radio"><input type="radio" name="savings-freq" value="Weekly"> Weekly</label>
-                <label class="field-radio"><input type="radio" name="savings-freq" value="Monthly"> Monthly</label>
-                <label class="field-radio"><input type="radio" name="savings-freq" value="Occasionally"> Occasionally</label>
+                <label class="field-radio"><input type="radio" name="savings_frequency" value="Daily"> Daily</label>
+                <label class="field-radio"><input type="radio" name="savings_frequency" value="Weekly"> Weekly</label>
+                <label class="field-radio"><input type="radio" name="savings_frequency" value="Monthly"> Monthly</label>
+                <label class="field-radio"><input type="radio" name="savings_frequency" value="Occasionally"> Occasionally</label>
               </div>
             </div>
             <div class="field full">
               <label for="reg-remarks">Remarks</label>
-              <textarea id="reg-remarks" rows="3"></textarea>
+              <textarea id="reg-remarks" name="remarks" rows="3"></textarea>
             </div>
           </div>
           <button type="submit" class="btn btn-primary form-submit">Create Account</button>
@@ -126,14 +135,14 @@
       <div class="form-card" style="max-width:440px;">
         <span class="eyebrow">Personal Login</span>
         <h3 style="margin-top:10px;">Welcome back, partner</h3>
-        <form data-demo-form style="margin-top:28px; display:grid; gap:20px;">
+        <form method="POST" action="{{ url_for('auth.login') }}" style="margin-top:28px; display:grid; gap:20px;">
           <div class="field">
             <label for="login-email">Email or Membership ID</label>
-            <input id="login-email" type="text" required>
+            <input id="login-email" name="identifier" type="text" required>
           </div>
           <div class="field">
             <label for="login-pass">Password</label>
-            <input id="login-pass" type="password" required>
+            <input id="login-pass" name="password" type="password" required>
           </div>
           <button type="submit" class="btn btn-primary form-submit">Log In to Dashboard</button>
           <p class="form-note">Once logged in, you'll see your savings, share capital, investments, loan history and dividend history in one dashboard.</p>
