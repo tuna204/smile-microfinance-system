@@ -54,13 +54,8 @@
             </p>
 
             <div class="hero-actions">
-                <a href="membership.html#register" class="btn btn-primary">
-                    Start Your Membership
-                </a>
-
-                <a href="how-it-works.html" class="btn btn-on-dark">
-                    See How It Works
-                </a>
+                <a href="{{ url_for('public.membership') }}#register" class="btn btn-primary">Start Your Membership</a>
+                <a href="{{ url_for('public.how_it_works') }}" class="btn btn-on-dark">See How It Works</a>
             </div>
 
             <div class="hero-stats">
