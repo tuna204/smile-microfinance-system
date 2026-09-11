@@ -68,7 +68,7 @@ def register():
 
         if Member.query.filter((Member.email == email) | (Member.phone == phone)).first():
             flash("An account with that email or phone already exists.", "error")
-            return redirect(url_for("auth.register"))
+            return redirect(url_for("public.membership") + "#register")
 
         password = request.form.get("password", "")
         confirm_password = request.form.get("confirm_password", "")
@@ -120,7 +120,7 @@ def register():
         )
         return redirect(url_for("public.membership") + "#login")
 
-    return render_template("auth/register.html")
+    return render_template(url_for("public.membership") + "#register")
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
@@ -140,11 +140,11 @@ def login():
 
         flash("Incorrect login details.", "error")
 
-    return render_template("auth/login.html")
+    return render_template(url_for("public.membership") + "#login")
 
 
 @auth_bp.route("/logout")
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for("auth.login"))
+    return redirect(url_for("public.membership") + "#login")
