@@ -113,8 +113,7 @@ def register():
         # NOTE: if a payment gateway is ever added back, virtual-account
         # creation would happen here on registration.
 
-        flash(
-            f"Account created! Your membership number is {member.membership_no}. ",
+        flash("Account created! Your membership number is {member.membership_no}. ",
             "success",
         )
         return redirect(url_for("public.membership") + "#login")
