@@ -114,8 +114,7 @@ def register():
         # creation would happen here on registration.
 
         flash(
-            f"Account created! Your membership number is {member.membership_no}. "
-            f"Log in below to access your dashboard.",
+            f"Account created! Your membership number is {member.membership_no}. ",
             "success",
         )
         return redirect(url_for("public.membership") + "#login")
