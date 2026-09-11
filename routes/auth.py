@@ -113,14 +113,14 @@ def register():
         # NOTE: if a payment gateway is ever added back, virtual-account
         # creation would happen here on registration.
 
-         flash(
+        flash(
             f"Account created! Your membership number is {member.membership_no}. "
             f"Log in below to access your dashboard.",
             "success",
         )
         return redirect(url_for("public.membership") + "#login")
 
-    return render_template(url_for("public.membership") + "#register")
+    return redirect(url_for("public.membership") + "#register")
 
 
 @auth_bp.route("/login", methods=["GET", "POST"])
@@ -140,7 +140,7 @@ def login():
 
         flash("Incorrect login details.", "error")
 
-    return render_template(url_for("public.membership") + "#login")
+    return redirect(url_for("public.membership") + "#login")
 
 
 @auth_bp.route("/logout")
