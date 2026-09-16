@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 
-from services.ledger import create_deposit_request
+from services.ledger import create_deposit_request, REGISTRATION_FEE_NGN
 
 dashboard_bp = Blueprint("dashboard", __name__, url_prefix="/dashboard")
 
@@ -29,12 +29,20 @@ def home():
         investments=member.investments.all(),
         transactions=recent_transactions,
         pending_requests=pending_requests,
+        registration_fee_amount=REGISTRATION_FEE_NGN,
     )
 
 
 @dashboard_bp.route("/request-deposit", methods=["POST"])
 @login_required
 def request_deposit():
+    # Server-side enforcement — this check exists independently of
+    # whatever the dashboard template shows or hides. A hidden button in
+    # HTML is never real security; someone could POST here directly.
+    if not current_user.registration_fee_paid:
+        flash("Activate your membership first — pay the one-time ₦5,000 registration fee shown on your dashboard.", "error")
+        return redirect(url_for("dashboard.home"))
+
     amount = request.form.get("amount", "").strip()
 
     try:
