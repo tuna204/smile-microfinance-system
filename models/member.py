@@ -6,7 +6,13 @@ from extensions import db
 
 class Member(UserMixin, db.Model):
     """A registered cooperative member. Also doubles as the login account —
-    role distinguishes a regular member from staff/admin."""
+    role distinguishes a regular member from staff/admin.
+
+    is_active_member defaults to False now: a member can register and log
+    in immediately, but is NOT considered an active member — and does not
+    get dashboard access to savings/loans/investments — until the ₦5,000
+    registration fee is confirmed by staff. See services/ledger.py's
+    confirm_registration_fee()."""
 
     __tablename__ = "members"
 
@@ -31,7 +37,11 @@ class Member(UserMixin, db.Model):
     # "member" = regular user, "admin" = staff who can approve/manage
     role = db.Column(db.String(20), nullable=False, default="member")
 
-    is_active_member = db.Column(db.Boolean, default=True)
+    # A member can log in as soon as they register, but is NOT active
+    # (no dashboard access to savings/loans/investments) until the
+    # registration fee is confirmed. registration_fee_paid is the single
+    # source of truth the dashboard/routes check against.
+    is_active_member = db.Column(db.Boolean, default=False)
     registration_fee_paid = db.Column(db.Boolean, default=False)
 
     date_joined = db.Column(db.DateTime, default=datetime.utcnow)
