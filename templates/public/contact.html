@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact Us Smile Multipurpose Cooperative</title>
-<meta name="description" content="Reach Smile Multipurpose Cooperative Society Limited — offices in Kurudu, Abuja and Mararaba, Nasarawa State.">
+<title>Contact Us - Smile Multipurpose Cooperative</title>
+<meta name="description" content="Reach Smile Multipurpose Cooperative Society Limited - offices in Kurudu, Abuja and Mararaba, Nasarawa State.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -17,16 +17,17 @@
     <a href="{{ url_for('public.index') }}" class="logo">Smile<span>.</span></a>
     <nav>
       <ul class="nav-links">
-        <li><a href="about.html">About</a></li>
-        <li><a href="products.html">Products</a></li>
-        <li><a href="https://mysmile.ng/works.html">How It Works</a></li>
-        <li><a href="faq.html">FAQ</a></li>
-        <li><a href="contact.html">Contact</a></li>
+        <li><a href="{{ url_for('public.about') }}">About</a></li>
+        <li><a href="{{ url_for('public.products') }}">Products</a></li>
+        <li><a href="{{ url_for('public.how_it_works') }}">How It Works</a></li>
+        <li><a href="{{ url_for('public.refer_and_earn') }}">Refer &amp; Earn</a></li>
+        <li><a href="{{ url_for('public.faq') }}">FAQ</a></li>
+        <li><a href="{{ url_for('public.contact') }}">Contact</a></li>
       </ul>
     </nav>
     <div class="nav-cta">
-      <a href="membership.html#login" class="btn btn-ghost">Member Login</a>
-      <a href="membership.html#register" class="btn btn-primary">Join Smile</a>
+      <a href="{{ url_for('public.membership') }}#login" class="btn btn-ghost">Member Login</a>
+      <a href="{{ url_for('public.membership') }}#register" class="btn btn-primary">Join Smile</a>
     </div>
     <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -47,18 +48,27 @@
 
     <div class="form-card" style="max-width:none;">
       <h3>Send us a message</h3>
-      <form data-demo-form style="margin-top:24px; display:grid; gap:20px;">
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash {{ category }}" style="margin-top:16px;">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="POST" action="{{ url_for('public.contact') }}" style="margin-top:24px; display:grid; gap:20px;">
         <div class="field">
           <label for="c-name">Full Name</label>
-          <input id="c-name" type="text" required>
+          <input id="c-name" name="full_name" type="text" required>
         </div>
         <div class="field">
           <label for="c-email">Email</label>
-          <input id="c-email" type="email" required>
+          <input id="c-email" name="email" type="email" required>
         </div>
         <div class="field">
           <label for="c-message">Message</label>
-          <textarea id="c-message" rows="5" required></textarea>
+          <textarea id="c-message" name="message" rows="5" required></textarea>
         </div>
         <button type="submit" class="btn btn-primary form-submit">Send</button>
       </form>
@@ -80,7 +90,7 @@
       <div class="card">
         <div class="icon-num">i</div>
         <h4>Email &amp; Hours</h4>
-        <p>info@smile.com<br>yoursmileourjoy@gmail.com</p>
+        <p><a href="mailto:info@mysmile.ng">info@mysmile.ng</a></p>
         <p style="margin-top:8px; color:#4A4838; font-size:0.9rem;">Mon – Fri: 8:00 AM – 5:00 PM<br>Sat: 9:00 AM – 2:00 PM</p>
       </div>
     </div>
@@ -98,10 +108,11 @@
       <div>
         <h5>Explore</h5>
         <ul>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="products.html">Products</a></li>
-          <li><a href="how-it-works.html">How It Works</a></li>
-          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="{{ url_for('public.about') }}">About Us</a></li>
+          <li><a href="{{ url_for('public.products') }}">Products</a></li>
+          <li><a href="{{ url_for('public.how_it_works') }}">How It Works</a></li>
+          <li><a href="{{ url_for('public.refer_and_earn') }}">Refer &amp; Earn</a></li>
+          <li><a href="{{ url_for('public.faq') }}">FAQ</a></li>
         </ul>
       </div>
       <div>
@@ -115,8 +126,8 @@
         <h5>Contact</h5>
         <ul>
           <li><a href="tel:+2347046409000">+234 704 640 9000</a></li>
-          <li><a href="mailto:info@smile.com">info@smile.com</a></li>
-          <li><a href="contact.html">Send a message →</a></li>
+          <li><a href="mailto:info@mysmile.ng">info@mysmile.ng</a></li>
+          <li><a href="{{ url_for('public.contact') }}">Send a message →</a></li>
         </ul>
       </div>
     </div>
