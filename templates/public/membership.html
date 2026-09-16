@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Membership = Smile Multipurpose Cooperative</title>
+<title>Membership - Smile Multipurpose Cooperative</title>
 <meta name="description" content="Register as a new member or log in to your Smile Multipurpose Cooperative account.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,12 +20,13 @@
         <li><a href="{{ url_for('public.about') }}">About</a></li>
         <li><a href="{{ url_for('public.products') }}">Products</a></li>
         <li><a href="{{ url_for('public.how_it_works') }}">How It Works</a></li>
+        <li><a href="{{ url_for('public.refer_and_earn') }}">Refer &amp; Earn</a></li>
         <li><a href="{{ url_for('public.faq') }}">FAQ</a></li>
         <li><a href="{{ url_for('public.contact') }}">Contact</a></li>
       </ul>
     </nav>
     <div class="nav-cta">
-     <a href="{{ url_for('public.membership') }}#login" class="btn btn-ghost">Member Login</a>
+      <a href="{{ url_for('public.membership') }}#login" class="btn btn-ghost">Member Login</a>
       <a href="{{ url_for('public.membership') }}#register" class="btn btn-primary">Join Smile</a>
     </div>
     <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
@@ -50,7 +51,6 @@
       <button class="member-tab-btn" data-target="login">Existing Member</button>
     </div>
 
-    <!-- REGISTER -->
     <div class="member-panel active" id="register">
       <div class="form-card">
         <span class="eyebrow">New Membership Registration</span>
@@ -130,7 +130,6 @@
       </div>
     </div>
 
-    <!-- LOGIN -->
     <div class="member-panel" id="login">
       <div class="form-card" style="max-width:440px;">
         <span class="eyebrow">Personal Login</span>
@@ -166,6 +165,7 @@
           <li><a href="{{ url_for('public.about') }}">About Us</a></li>
           <li><a href="{{ url_for('public.products') }}">Products</a></li>
           <li><a href="{{ url_for('public.how_it_works') }}">How It Works</a></li>
+          <li><a href="{{ url_for('public.refer_and_earn') }}">Refer &amp; Earn</a></li>
           <li><a href="{{ url_for('public.faq') }}">FAQ</a></li>
         </ul>
       </div>
@@ -180,8 +180,8 @@
         <h5>Contact</h5>
         <ul>
           <li><a href="tel:+2347046409000">+234 704 640 9000</a></li>
-          <li><a href="mailto:info@smile.com">info@smile.com</a></li>
-          <li><a href="contact.html">Send a message →</a></li>
+          <li><a href="mailto:info@mysmile.ng">info@mysmile.ng</a></li>
+          <li><a href="{{ url_for('public.contact') }}">Send a message →</a></li>
         </ul>
       </div>
     </div>
