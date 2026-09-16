@@ -3,7 +3,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, abort, r
 from flask_login import login_required, current_user
 
 from models import Member
-from services.ledger import needs_review, mark_reviewed, record_deposit
+from services.ledger import needs_review, mark_reviewed, record_deposit, confirm_registration_fee
 from services.notify import send_payment_email, send_payment_sms
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -39,22 +39,37 @@ def home():
 @login_required
 @admin_required
 def record_payment():
-    """The core of the fee-free reconciliation flow: a member transfers
-    directly to the company bank account using their membership number
-    as the transfer narration. Staff sees the bank alert (SMS/app) like
-    normal, and confirms it here. From that one click, the balance
-    updates and email + SMS notifications fire automatically — the only
-    manual step is this glance-and-confirm, not full bank detection."""
+    """Handles two distinct payment types via the same lookup-by-membership-
+    number flow: registration fee (fixed ₦5,000, activates the member,
+    never touches savings) and savings deposit (any amount, credits the
+    balance). Kept as one page so staff only has to remember one place to
+    go, with the type chosen via radio buttons rather than two URLs."""
 
     if request.method == "POST":
         membership_no = request.form.get("membership_no", "").strip().upper()
-        amount = request.form.get("amount", "").strip()
-        narration = request.form.get("narration", "").strip()
+        payment_type = request.form.get("payment_type", "savings")
 
         member = Member.query.filter_by(membership_no=membership_no).first()
         if not member:
             flash(f"No member found with membership number {membership_no}.", "error")
             return redirect(url_for("admin.record_payment"))
+
+        if payment_type == "registration_fee":
+            if member.registration_fee_paid:
+                flash(f"{member.full_name} ({member.membership_no}) is already activated.", "error")
+                return redirect(url_for("admin.record_payment"))
+
+            confirm_registration_fee(member, admin_member=current_user)
+            flash(
+                f"Registration fee confirmed for {member.full_name} ({member.membership_no}). "
+                f"Membership is now active.",
+                "success",
+            )
+            return redirect(url_for("admin.record_payment"))
+
+        # payment_type == "savings" — existing deposit flow, unchanged
+        amount = request.form.get("amount", "").strip()
+        narration = request.form.get("narration", "").strip()
 
         try:
             amount_val = float(amount)
