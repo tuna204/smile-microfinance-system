@@ -43,3 +43,20 @@ def send_payment_sms(member, amount):
         timeout=15,
     )
     return resp.json()
+
+
+# ============================================================
+# ADD THIS FUNCTION to services/notify.py — don't remove
+# anything already there (send_payment_email, send_payment_sms).
+# ============================================================
+
+def send_contact_message(full_name, email, message):
+    """Sends a contact-form submission to the company inbox. Uses the
+    same Flask-Mail setup as payment notifications."""
+    msg = Message(
+        subject=f"New contact form message from {full_name}",
+        recipients=[current_app.config.get("MAIL_DEFAULT_SENDER")],
+        reply_to=email,
+        body=f"From: {full_name} <{email}>\n\n{message}",
+    )
+    mail.send(msg)
