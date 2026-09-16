@@ -15,6 +15,15 @@
   </div>
 </div>
 
+{% if not member.registration_fee_paid %}
+  <div class="app-payin-box" style="border:2px solid var(--gold); margin-bottom:28px;">
+    <strong>Activate your membership</strong>
+    <p style="margin-top:6px;">Pay a one-time registration fee of <strong>₦{{ "{:,.2f}".format(registration_fee_amount) }}</strong> to unlock savings, loans and investments.</p>
+    <div class="app-payin-ref">{{ member.membership_no }}</div>
+    <p class="form-note">Transfer to the company account using this reference. [Company bank account name / number / bank go here] Your membership activates once staff confirm the transfer.</p>
+  </div>
+{% endif %}
+
 <div class="app-balance-card">
   <div class="app-balance-label">Savings Balance</div>
   <div class="app-balance-amount">₦{{ "{:,.2f}".format(balance) }}</div>
@@ -24,35 +33,40 @@
   <div class="app-section-head">
     <h3>Add Money</h3>
   </div>
-  <div class="app-form-card">
-    <form method="POST" action="{{ url_for('dashboard.request_deposit') }}" style="display:flex; gap:12px; align-items:end; flex-wrap:wrap;">
-      <div class="field" style="flex:1; min-width:200px; margin-bottom:0;">
-        <label for="amount">How much do you want to save?</label>
-        <input type="number" id="amount" name="amount" step="0.01" min="1" placeholder="e.g. 10000" required>
-      </div>
-      <button type="submit" class="btn btn-primary">Generate Payment Details</button>
-    </form>
-  </div>
 
-  {% if pending_requests %}
-    <div style="margin-top:20px;">
-      <p style="font-size:0.9rem; color:#4A4838; margin-bottom:12px;">Transfer any of these amounts to the account below, using your membership number as the description:</p>
-      <div class="app-payin-box">
-        <div class="app-payin-ref">{{ member.membership_no }}</div>
-        <p class="form-note">[Company bank account name / number / bank go here]</p>
-      </div>
-      <div class="app-list" style="margin-top:14px;">
-        {% for req in pending_requests %}
-          <div class="app-row">
-            <div class="app-row-main">
-              <span class="app-row-title">Requested to save ₦{{ "{:,.2f}".format(req.amount) }}</span>
-              <span class="app-row-sub">{{ req.created_at.strftime('%d %b %Y') }}</span>
-            </div>
-            <span class="app-pill app-pill-pending">Awaiting transfer</span>
-          </div>
-        {% endfor %}
-      </div>
+  {% if member.registration_fee_paid %}
+    <div class="app-form-card">
+      <form method="POST" action="{{ url_for('dashboard.request_deposit') }}" style="display:flex; gap:12px; align-items:end; flex-wrap:wrap;">
+        <div class="field" style="flex:1; min-width:200px; margin-bottom:0;">
+          <label for="amount">How much do you want to save?</label>
+          <input type="number" id="amount" name="amount" step="0.01" min="1" placeholder="e.g. 10000" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Generate Payment Details</button>
+      </form>
     </div>
+
+    {% if pending_requests %}
+      <div style="margin-top:20px;">
+        <p style="font-size:0.9rem; color:#4A4838; margin-bottom:12px;">Transfer any of these amounts to the account below, using your membership number as the description:</p>
+        <div class="app-payin-box">
+          <div class="app-payin-ref">{{ member.membership_no }}</div>
+          <p class="form-note">[Company bank account name / number / bank go here]</p>
+        </div>
+        <div class="app-list" style="margin-top:14px;">
+          {% for req in pending_requests %}
+            <div class="app-row">
+              <div class="app-row-main">
+                <span class="app-row-title">Requested to save ₦{{ "{:,.2f}".format(req.amount) }}</span>
+                <span class="app-row-sub">{{ req.created_at.strftime('%d %b %Y') }}</span>
+              </div>
+              <span class="app-pill app-pill-pending">Awaiting transfer</span>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="app-empty">Activate your membership above to start saving.</div>
   {% endif %}
 </div>
 
@@ -60,7 +74,9 @@
   <div class="app-section-head">
     <h3>Loans</h3>
   </div>
-  {% if loans %}
+  {% if not member.registration_fee_paid %}
+    <div class="app-empty">Activate your membership above to access loans.</div>
+  {% elif loans %}
     <div class="app-list">
       {% for loan in loans %}
         <div class="app-row">
@@ -81,7 +97,9 @@
   <div class="app-section-head">
     <h3>Investments</h3>
   </div>
-  {% if investments %}
+  {% if not member.registration_fee_paid %}
+    <div class="app-empty">Activate your membership above to access investments.</div>
+  {% elif investments %}
     <div class="app-list">
       {% for inv in investments %}
         <div class="app-row">
