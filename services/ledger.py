@@ -26,6 +26,50 @@ from models import Transaction, SavingsAccount
 REVIEW_THRESHOLD_NGN = Decimal("500000")
 
 
+# ============================================================
+# ADD THIS to services/ledger.py — near the top with the other
+# constants (REVIEW_THRESHOLD_NGN), and add confirm_registration_fee()
+# as a new function anywhere in the file. Don't remove anything
+# already in that file — this is additive.
+# ============================================================
+
+REGISTRATION_FEE_NGN = Decimal("5000")
+
+
+def confirm_registration_fee(member, admin_member=None):
+    """Confirms the one-time ₦5,000 registration fee and activates the
+    member. Deliberately does NOT touch the savings balance — this fee
+    is not the member's money to withdraw later, it's separate from
+    savings entirely.
+
+    The amount is hardcoded here (REGISTRATION_FEE_NGN), never read from
+    a form field — so a typo or a tampered request can never activate
+    someone for the wrong amount, or under-charge them.
+    """
+    if member.registration_fee_paid:
+        return None  # already activated — avoid creating a duplicate transaction
+
+    txn = Transaction(
+        member_id=member.id,
+        type="registration_fee",
+        amount=REGISTRATION_FEE_NGN,
+        status="reflected",
+        source="admin_action",
+        narration=(
+            f"Registration fee confirmed by {admin_member.full_name}"
+            if admin_member else "Registration fee confirmed"
+        ),
+        reflected_at=datetime.utcnow(),
+    )
+    db.session.add(txn)
+
+    member.registration_fee_paid = True
+    member.is_active_member = True
+
+    db.session.commit()
+    return txn
+
+
 def create_deposit_request(member, amount, narration=None):
     """A member saying 'I intend to save this amount' — creates a PENDING
     transaction for visibility only. This deliberately does NOT touch the
