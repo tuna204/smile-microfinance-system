@@ -286,27 +286,9 @@ p { max-width: 60ch; }
 }
 
 .hero-visual {
-    position: relative;
-
     width: 100%;
-    min-width: 0;
-
-    border-radius: var(--radius);
-
-    background:
-        linear-gradient(
-            155deg,
-            var(--emerald-light),
-            var(--emerald)
-        );
-
-    border: 1px solid rgba(251, 246, 234, 0.15);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
     overflow: hidden;
+    border-radius: var(--radius);
 }
 
 .hero-visual .card-top {
@@ -343,15 +325,9 @@ p { max-width: 60ch; }
 
 .hero-image {
     display: block;
-
     width: 100%;
     height: auto;
-
     max-width: 100%;
-
-    object-fit: contain;
-    object-position: center;
-
     border-radius: var(--radius);
 }
 
