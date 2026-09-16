@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How It Works - Smile Multipurpose Cooperative</title>
+<title>How It Works — Smile Multipurpose Cooperative</title>
 <meta name="description" content="Becoming a member of Smile Multipurpose Cooperative is easy — see the 6 steps.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,19 +14,20 @@
 
 <header class="site-header">
   <div class="wrap">
-  <a href="{{ url_for('public.index') }}" class="logo">
+    <a href="{{ url_for('public.index') }}" class="logo">Smile<span>.</span></a>
     <nav>
       <ul class="nav-links">
         <li><a href="{{ url_for('public.about') }}">About</a></li>
         <li><a href="{{ url_for('public.products') }}">Products</a></li>
         <li><a href="{{ url_for('public.how_it_works') }}">How It Works</a></li>
+        <li><a href="{{ url_for('public.refer_and_earn') }}">Refer &amp; Earn</a></li>
         <li><a href="{{ url_for('public.faq') }}">FAQ</a></li>
         <li><a href="{{ url_for('public.contact') }}">Contact</a></li>
       </ul>
     </nav>
     <div class="nav-cta">
-      <a href="membership.html#login" class="btn btn-ghost">Member Login</a>
-      <a href="membership.html#register" class="btn btn-primary">Join Smile</a>
+      <a href="{{ url_for('public.membership') }}#login" class="btn btn-ghost">Member Login</a>
+      <a href="{{ url_for('public.membership') }}#register" class="btn btn-primary">Join Smile</a>
     </div>
     <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -45,30 +46,12 @@
 <section>
   <div class="wrap" style="max-width:820px;">
     <div class="steps-list">
-      <div class="step-row">
-        <span class="step-num">01</span>
-        <div><h4>Complete your membership registration</h4><p>Fill in your details online or at any of our offices — Kurudu, Abuja or Mararaba, Nasarawa.</p></div>
-      </div>
-      <div class="step-row">
-        <span class="step-num">02</span>
-        <div><h4>Register with ₦5,000</h4><p>Early registration fee to activate your membership.</p></div>
-      </div>
-      <div class="step-row">
-        <span class="step-num">03</span>
-        <div><h4>Start your savings</h4><p>Begin with an amount of your choice — daily, weekly, monthly or occasional.</p></div>
-      </div>
-      <div class="step-row">
-        <span class="step-num">04</span>
-        <div><h4>Save consistently</h4><p>Build a savings history — this is what unlocks the next step.</p></div>
-      </div>
-      <div class="step-row">
-        <span class="step-num">05</span>
-        <div><h4>Access loans after 6 months</h4><p>Qualify for a loan of up to twice your savings, once you've saved consistently for 6 months.</p></div>
-      </div>
-      <div class="step-row">
-        <span class="step-num">06</span>
-        <div><h4>Build sustainable wealth</h4><p>Grow further through our investment plans, tailored to your goals.</p></div>
-      </div>
+      <div class="step-row"><span class="step-num">01</span><div><h4>Complete your membership registration</h4><p>Fill in your details online or at any of our offices - Kurudu, Abuja or Mararaba, Nasarawa.</p></div></div>
+      <div class="step-row"><span class="step-num">02</span><div><h4>Register with ₦5,000</h4><p>Early registration fee to activate your membership.</p></div></div>
+      <div class="step-row"><span class="step-num">03</span><div><h4>Start your savings</h4><p>Begin with an amount of your choice - daily, weekly, monthly or occasional.</p></div></div>
+      <div class="step-row"><span class="step-num">04</span><div><h4>Save consistently</h4><p>Build a savings history - this is what unlocks the next step.</p></div></div>
+      <div class="step-row"><span class="step-num">05</span><div><h4>Access loans after 6 months</h4><p>Qualify for a loan of up to twice your savings, once you've saved consistently for 6 months.</p></div></div>
+      <div class="step-row"><span class="step-num">06</span><div><h4>Build sustainable wealth</h4><p>Grow further through our investment plans, tailored to your goals.</p></div></div>
     </div>
   </div>
 </section>
@@ -96,8 +79,8 @@
   <div class="wrap">
     <div class="cta-band">
       <h2>Take the first step today</h2>
-      <p>Registration takes minutes. Building wealth takes commitment — we'll be with you the whole way.</p>
-      <a href="membership.html#register" class="btn btn-primary">Register Now</a>
+      <p>Registration takes minutes. Building wealth takes commitment - we'll be with you the whole way.</p>
+      <a href="{{ url_for('public.membership') }}#register" class="btn btn-primary">Register Now</a>
     </div>
   </div>
 </section>
@@ -115,6 +98,7 @@
           <li><a href="{{ url_for('public.about') }}">About Us</a></li>
           <li><a href="{{ url_for('public.products') }}">Products</a></li>
           <li><a href="{{ url_for('public.how_it_works') }}">How It Works</a></li>
+          <li><a href="{{ url_for('public.refer_and_earn') }}">Refer &amp; Earn</a></li>
           <li><a href="{{ url_for('public.faq') }}">FAQ</a></li>
         </ul>
       </div>
@@ -129,8 +113,8 @@
         <h5>Contact</h5>
         <ul>
           <li><a href="tel:+2347046409000">+234 704 640 9000</a></li>
-          <li><a href="mailto:info@smile.com">info@smile.com</a></li>
-          <li><a href="contact.html">Send a message →</a></li>
+          <li><a href="mailto:info@mysmile.ng">info@mysmile.ng</a></li>
+          <li><a href="{{ url_for('public.contact') }}">Send a message →</a></li>
         </ul>
       </div>
     </div>
