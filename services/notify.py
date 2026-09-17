@@ -8,6 +8,9 @@ import requests
 from flask import current_app
 from flask_mail import Message
 from extensions import mail
+from html import escape
+import resend
+
 
 
 def send_payment_email(member, amount, new_balance):
@@ -45,18 +48,27 @@ def send_payment_sms(member, amount):
     return resp.json()
 
 
-# ============================================================
-# ADD THIS FUNCTION to services/notify.py — don't remove
-# anything already there (send_payment_email, send_payment_sms).
-# ============================================================
-
 def send_contact_message(full_name, email, message):
-    """Sends a contact-form submission to the company inbox. Uses the
-    same Flask-Mail setup as payment notifications."""
-    msg = Message(
-        subject=f"New contact form message from {full_name}",
-        recipients=[current_app.config.get("MAIL_DEFAULT_SENDER")],
-        reply_to=email,
-        body=f"From: {full_name} <{email}>\n\n{message}",
-    )
-    mail.send(msg)
+    """Send a contact-form submission to the company inbox using Resend."""
+
+    resend.api_key = current_app.config["RESEND_API_KEY"]
+
+    safe_name = escape(full_name)
+    safe_email = escape(email)
+    safe_message = escape(message).replace("\n", "<br>")
+
+    params = {
+        "from": "Smile <info@mysmile.ng>",
+        "to": [current_app.config["CONTACT_RECIPIENT"]],
+        "reply_to": email,
+        "subject": f"New contact form message from {full_name}",
+        "html": f"""
+            <h2>New Contact Form Message</h2>
+            <p><strong>Name:</strong> {safe_name}</p>
+            <p><strong>Email:</strong> {safe_email}</p>
+            <h3>Message</h3>
+            <p>{safe_message}</p>
+        """,
+    }
+
+    return resend.Emails.send(params)
