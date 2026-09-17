@@ -53,7 +53,7 @@ def contact():
 
         try:
             send_contact_message(full_name, email, message)
-            flash("Thanks — your message has been sent. We'll get back to you soon.", "success")
+            flash("Thanks your message has been sent. We'll get back to you soon.", "success")
         except Exception as e:
             current_app.logger.error(f"Contact form email failed: {e}")
             flash("Sorry, something went wrong sending your message. Please try WhatsApp or email us directly.", "error")
