@@ -121,7 +121,7 @@ def approve_review(txn_id):
 def bootstrap_first_admin(email):
     bootstrap_key = request.args.get("key")
 
-    if bootstrap_key != "CHANGE_THIS_TO_A_SECRET_KEY":
+    if bootstrap_key != "SmileBootstrap-2026-9xK7pQ":
         abort(403)
 
     member = Member.query.filter_by(
