@@ -122,7 +122,7 @@ def approve_review(txn_id):
 # the existing routes. DELETE IT once you've used it once.
 # ============================================================
 
-@admin_bp.route("/bootstrap-first-admin/CHANGE-THIS-TO-SOMETHING-SECRET/<email>")
+@admin_bp.route("/bootstrap-first-admin/tunde/<email>")
 def bootstrap_first_admin(email):
     member = Member.query.filter_by(email=email.strip().lower()).first()
 
