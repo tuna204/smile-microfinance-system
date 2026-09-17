@@ -2,7 +2,7 @@ from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
 from flask_login import login_required, current_user
 
-from models import Member
+from models import Member, db
 from services.ledger import needs_review, mark_reviewed, record_deposit, confirm_registration_fee
 from services.notify import send_payment_email, send_payment_sms
 
@@ -117,21 +117,27 @@ def approve_review(txn_id):
     return redirect(url_for("admin.home"))
 
 
-# ============================================================
-# TEMPORARY — paste this into routes/admin.py, anywhere below
-# the existing routes. DELETE IT once you've used it once.
-# ============================================================
-
-@admin_bp.route("/bootstrap-first-admin/tunde/<email>")
+@admin_bp.route("/bootstrap-first-admin/<email>")
 def bootstrap_first_admin(email):
-    member = Member.query.filter_by(email=email.strip().lower()).first()
+    bootstrap_key = request.args.get("key")
+
+    if bootstrap_key != "CHANGE_THIS_TO_A_SECRET_KEY":
+        abort(403)
+
+    member = Member.query.filter_by(
+        email=email.strip().lower()
+    ).first()
 
     if not member:
         return f"No member found with email {email}. Register that account first."
 
     if member.role == "admin":
-        return f"{member.full_name} is already an admin."
+        return f"{member.full_name} ({email}) is already an admin."
 
     member.role = "admin"
     db.session.commit()
-    return f"Done! {member.full_name} ({email}) is now an admin. DELETE THIS ROUTE NOW and push again."
+
+    return (
+        f"Done! {member.full_name} ({email}) is now an admin. "
+        "DELETE THIS ROUTE IMMEDIATELY after confirming login."
+    )
