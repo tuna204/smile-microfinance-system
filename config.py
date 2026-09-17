@@ -34,6 +34,13 @@ class Config:
     TERMII_API_KEY = os.environ.get("TERMII_API_KEY", "")
     TERMII_SENDER_ID = os.environ.get("TERMII_SENDER_ID", "Smile")
 
+    RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+
+    CONTACT_RECIPIENT = os.environ.get(
+        "CONTACT_RECIPIENT",
+        "info@mysmile.ng"
+    )
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
