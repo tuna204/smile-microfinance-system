@@ -2,7 +2,7 @@ from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
 from flask_login import login_required, current_user
 
-from models import Member, db
+from models import Member,
 from services.ledger import needs_review, mark_reviewed, record_deposit, confirm_registration_fee
 from services.notify import send_payment_email, send_payment_sms
 
