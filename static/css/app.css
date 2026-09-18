@@ -121,9 +121,7 @@
   margin: 8px 0;
   letter-spacing: 0.02em;
 }
-.app-payin-box .form-note { margin-top: 8px; 
-                          font-size: 60px
-                          font-weight: bold}
+.app-payin-box .form-note { margin-top: 8px; }
 
 /* Section headers within the dashboard */
 .app-section { margin-bottom: 40px; }
