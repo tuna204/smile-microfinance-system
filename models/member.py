@@ -5,14 +5,16 @@ from extensions import db
 
 
 class Member(UserMixin, db.Model):
-    """A registered cooperative member. Also doubles as the login account —
-    role distinguishes a regular member from staff/admin.
+    """A registered cooperative member. Also doubles as the login account.
 
-    is_active_member defaults to False now: a member can register and log
-    in immediately, but is NOT considered an active member — and does not
-    get dashboard access to savings/loans/investments — until the ₦5,000
-    registration fee is confirmed by staff. See services/ledger.py's
-    confirm_registration_fee()."""
+    Referral system: a member's own membership_no IS their referral code
+    — no separate code needed. Someone registering via /membership?ref=<code>
+    gets referred_by_id set to that member's id. When THAT referred member's
+    registration fee is confirmed (see confirm_registration_fee), a ₦1,000
+    referral bonus becomes owed to the referrer — paid out manually by
+    admin to the referrer's own bank details (payout_account_number etc.),
+    since this bonus is real cash leaving the cooperative, not a savings
+    credit."""
 
     __tablename__ = "members"
 
@@ -32,22 +34,28 @@ class Member(UserMixin, db.Model):
     savings_frequency = db.Column(db.String(20))  # Daily / Weekly / Monthly / Occasionally
     remarks = db.Column(db.Text)
 
+    # Member's OWN bank account, for the cooperative to pay THEM —
+    # referral bonuses, loan disbursements, dividends, etc. Nullable in
+    # the DB so existing members aren't broken by this new column, but
+    # required on the registration form going forward.
+    payout_account_number = db.Column(db.String(20))
+    payout_bank_name = db.Column(db.String(100))
+    payout_account_name = db.Column(db.String(150))
+
+    # Referral tracking — see class docstring.
+    referred_by_id = db.Column(db.Integer, db.ForeignKey("members.id"), nullable=True)
+    referred_by = db.relationship("Member", remote_side=[id], foreign_keys=[referred_by_id])
+
     password_hash = db.Column(db.String(255), nullable=False)
 
-    # "member" = regular user, "admin" = staff who can approve/manage
     role = db.Column(db.String(20), nullable=False, default="member")
 
-    # A member can log in as soon as they register, but is NOT active
-    # (no dashboard access to savings/loans/investments) until the
-    # registration fee is confirmed. registration_fee_paid is the single
-    # source of truth the dashboard/routes check against.
     is_active_member = db.Column(db.Boolean, default=False)
     registration_fee_paid = db.Column(db.Boolean, default=False)
 
     date_joined = db.Column(db.DateTime, default=datetime.utcnow)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    # Relationships
     savings_account = db.relationship("SavingsAccount", backref="member", uselist=False)
     loans = db.relationship("Loan", foreign_keys="Loan.member_id", backref="member", lazy="dynamic")
     investments = db.relationship("Investment", backref="member", lazy="dynamic")
