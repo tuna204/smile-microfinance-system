@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Referral Payouts — Smile Cooperative{% endblock %}
+{% block content %}
+
+<div class="app-page-head">
+  <span class="eyebrow">Staff Area</span>
+  <h1>Referral Payouts Due</h1>
+  <p>Each row is ₦1,000 owed to the referrer, triggered automatically when the person they referred paid their registration fee. Send the money to the bank details shown, then mark it paid.</p>
+</div>
+
+{% if rows %}
+  <div class="app-list">
+    {% for txn, referrer in rows %}
+      <div class="app-row" style="align-items:flex-start;">
+        <div class="app-row-main">
+          <span class="app-row-title">{{ referrer.full_name if referrer else "Unknown member" }} ({{ referrer.membership_no if referrer else "—" }})</span>
+          <span class="app-row-sub">{{ txn.narration }}</span>
+          {% if referrer and referrer.payout_account_number %}
+            <span class="app-row-sub" style="margin-top:6px; font-family:var(--font-mono);">
+              {{ referrer.payout_account_number }} — {{ referrer.payout_bank_name }} — {{ referrer.payout_account_name }}
+            </span>
+          {% else %}
+            <span class="app-row-sub" style="color:#8A2A20;">No payout bank details on file for this member.</span>
+          {% endif %}
+        </div>
+        <div style="display:flex; align-items:center; gap:14px;">
+          <span class="app-row-amount">₦{{ "{:,.2f}".format(txn.amount) }}</span>
+          <form method="POST" action="{{ url_for('admin.mark_referral_payout_paid', txn_id=txn.id) }}">
+            <button type="submit" class="btn btn-ghost" style="padding:8px 16px; font-size:0.82rem;">Mark Paid</button>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="app-empty">No referral payouts pending right now.</div>
+{% endif %}
+
+<p style="margin-top:24px;"><a href="{{ url_for('admin.home') }}">&larr; Back to admin overview</a></p>
+
+{% endblock %}
