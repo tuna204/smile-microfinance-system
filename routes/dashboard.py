@@ -12,7 +12,7 @@ def home():
     member = current_user
     account = member.savings_account
 
-    from models import Transaction
+    from models import Transaction, Member
     recent_transactions = (
         member.transactions.order_by(Transaction.created_at.desc()).limit(10).all()
     )
@@ -20,6 +20,9 @@ def home():
         member.transactions.filter_by(status="pending", source="member_request")
         .order_by(Transaction.created_at.desc()).all()
     )
+
+    referral_link = url_for("public.membership", ref=member.membership_no, _external=True)
+    referral_count = Member.query.filter_by(referred_by_id=member.id).count()
 
     return render_template(
         "dashboard/home.html",
@@ -30,15 +33,14 @@ def home():
         transactions=recent_transactions,
         pending_requests=pending_requests,
         registration_fee_amount=REGISTRATION_FEE_NGN,
+        referral_link=referral_link,
+        referral_count=referral_count,
     )
 
 
 @dashboard_bp.route("/request-deposit", methods=["POST"])
 @login_required
 def request_deposit():
-    # Server-side enforcement — this check exists independently of
-    # whatever the dashboard template shows or hides. A hidden button in
-    # HTML is never real security; someone could POST here directly.
     if not current_user.registration_fee_paid:
         flash("Activate your membership first — pay the one-time ₦5,000 registration fee shown on your dashboard.", "error")
         return redirect(url_for("dashboard.home"))
