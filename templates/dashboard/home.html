@@ -19,10 +19,32 @@
   <div class="app-payin-box" style="border:2px solid var(--gold); margin-bottom:28px;">
     <strong>Activate your membership</strong>
     <p style="margin-top:6px;">Pay a one-time registration fee of <strong>₦{{ "{:,.2f}".format(registration_fee_amount) }}</strong> to unlock savings, loans and investments.</p>
+    <p class="form-note" style="margin-top:8px;">Use your membership number as the transfer description:</p>
     <div class="app-payin-ref">{{ member.membership_no }}</div>
-    <p class="form-note">Transfer to the company account using this reference. [Smile Multipurpose Cooperative Society / 0450905649 / Wema Bank Plc ] Your membership activates once staff confirm the transfer.</p>
+
+    <div class="app-bank-details">
+      <div class="row"><span class="label">Account Number</span><span class="value">0450905649</span></div>
+      <div class="row"><span class="label">Bank Name</span><span class="value">Wema Bank Plc</span></div>
+      <div class="row"><span class="label">Account Name</span><span class="value">Smile Multipurpose Cooperative Society</span></div>
+    </div>
+
+    <a class="app-whatsapp-link" target="_blank" rel="noopener"
+       href="https://wa.me/2347046409000?text=Hi%2C%20I%20just%20paid%20my%20%E2%82%A65%2C000%20registration%20fee.%20My%20membership%20number%20is%20{{ member.membership_no }}%2C%20find%20my%20receipt%20attached.">
+      Send receipt on WhatsApp
+    </a>
+    <p class="form-note" style="margin-top:10px;">Your membership activates once staff confirm the transfer.</p>
   </div>
 {% endif %}
+
+<div class="app-referral-box">
+  <div class="app-referral-label">Refer &amp; Earn</div>
+  <p style="margin-top:8px;">Share your link — earn ₦1,000 for every friend who joins and pays their registration fee.</p>
+  <div class="app-referral-link-row">
+    <input type="text" readonly value="{{ referral_link }}" id="referral-link-input">
+    <button type="button" class="btn btn-primary" onclick="copyReferralLink()">Copy Link</button>
+  </div>
+  <p class="app-referral-count">{{ referral_count }} member{{ 's' if referral_count != 1 else '' }} referred so far</p>
+</div>
 
 <div class="app-balance-card">
   <div class="app-balance-label">Savings Balance</div>
@@ -50,7 +72,15 @@
         <p style="font-size:0.9rem; color:#4A4838; margin-bottom:12px;">Transfer any of these amounts to the account below, using your membership number as the description:</p>
         <div class="app-payin-box">
           <div class="app-payin-ref">{{ member.membership_no }}</div>
-          <p class="form-note">[Company bank account name / number / bank go here]</p>
+          <div class="app-bank-details">
+            <div class="row"><span class="label">Account Number</span><span class="value">0450905649</span></div>
+            <div class="row"><span class="label">Bank Name</span><span class="value">Wema Bank Plc</span></div>
+            <div class="row"><span class="label">Account Name</span><span class="value">Smile Multipurpose Cooperative Society</span></div>
+          </div>
+          <a class="app-whatsapp-link" target="_blank" rel="noopener"
+             href="https://wa.me/2347046409000?text=Hi%2C%20I%20just%20made%20a%20savings%20transfer.%20My%20membership%20number%20is%20{{ member.membership_no }}%2C%20find%20my%20receipt%20attached.">
+            Send receipt on WhatsApp
+          </a>
         </div>
         <div class="app-list" style="margin-top:14px;">
           {% for req in pending_requests %}
@@ -139,5 +169,16 @@
     <div class="app-empty">No transactions yet.</div>
   {% endif %}
 </div>
+
+<script>
+function copyReferralLink() {
+  const input = document.getElementById('referral-link-input');
+  input.select();
+  navigator.clipboard.writeText(input.value).then(() => {
+    event.target.textContent = 'Copied!';
+    setTimeout(() => { event.target.textContent = 'Copy Link'; }, 2000);
+  });
+}
+</script>
 
 {% endblock %}
