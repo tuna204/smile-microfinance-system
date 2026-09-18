@@ -203,3 +203,77 @@
   .app-stat-grid { grid-template-columns: 1fr; }
   .app-row { flex-direction: column; align-items: flex-start; }
 }
+
+
+/* ============================================================
+   ADD THIS to static/css/app.css — additive, don't remove
+   anything already there.
+   ============================================================ */
+
+/* Bold, unmissable company account details */
+.app-bank-details {
+  background: var(--white);
+  border: 2px solid var(--emerald);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin: 12px 0;
+}
+.app-bank-details .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-weight: 700;
+}
+.app-bank-details .row + .row { border-top: 1px dashed var(--line); }
+.app-bank-details .label { font-family: var(--font-mono); font-size: 0.78rem; color: var(--teal); font-weight: 500; }
+.app-bank-details .value { font-family: var(--font-mono); font-size: 1.05rem; color: var(--emerald); }
+
+/* WhatsApp receipt link */
+.app-whatsapp-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 18px;
+  background: #25D366;
+  color: white;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+.app-whatsapp-link:hover { opacity: 0.9; }
+
+/* Referral link box */
+.app-referral-box {
+  background: var(--emerald);
+  color: var(--paper);
+  border-radius: var(--radius);
+  padding: 26px;
+  margin-bottom: 32px;
+}
+.app-referral-box .app-referral-label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.app-referral-link-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.app-referral-link-row input {
+  flex: 1;
+  min-width: 220px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(251,246,234,0.1);
+  color: var(--paper);
+}
+.app-referral-count { margin-top: 10px; font-size: 0.85rem; color: rgba(251,246,234,0.7); }
