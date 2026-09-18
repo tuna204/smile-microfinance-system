@@ -14,11 +14,10 @@ from models import Member, SavingsAccount
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 ALLOWED_PHOTO_EXTENSIONS = {"png", "jpg", "jpeg"}
-MAX_PHOTO_BYTES = 2 * 1024 * 1024  # 2MB — matches the frontend check in main.js
+MAX_PHOTO_BYTES = 2 * 1024 * 1024  # 2MB
 
 
 def _generate_membership_no():
-    """SM-2026-XXXXX format. Retries on the rare collision."""
     while True:
         candidate = f"SM-{date.today().year}-{''.join(random.choices(string.digits, k=5))}"
         if not Member.query.filter_by(membership_no=candidate).first():
@@ -26,16 +25,8 @@ def _generate_membership_no():
 
 
 def _save_passport_photo(file_storage, membership_no):
-    """Validates and saves the uploaded passport photo. Returns the
-    public URL path to store on the member, or None if no valid file
-    was uploaded.
-
-    IMPORTANT — Railway's filesystem is ephemeral (wiped on every
-    redeploy), same issue as the SQLite decision earlier. This local-disk
-    approach is fine for development, but before going live, swap this
-    for an external storage service (Cloudinary has a generous free
-    tier and is simple to wire in) so photos survive deployments.
-    """
+    """See earlier note: Railway's filesystem is ephemeral. Fine for now,
+    swap for Cloudinary or similar before going live."""
     if not file_storage or file_storage.filename == "":
         return None
 
@@ -82,7 +73,18 @@ def register():
             try:
                 dob = datetime.strptime(dob_raw, "%Y-%m-%d").date()
             except ValueError:
-                pass  # leave as None rather than fail registration over a bad date
+                pass
+
+        # Referral capture: if a valid referral code (another member's
+        # membership_no) came through, link this new member to them. A
+        # missing or invalid code is silently ignored — never blocks
+        # registration.
+        referral_code = request.form.get("referral_code", "").strip().upper()
+        referred_by_id = None
+        if referral_code:
+            referrer = Member.query.filter_by(membership_no=referral_code).first()
+            if referrer:
+                referred_by_id = referrer.id
 
         membership_no = _generate_membership_no()
         photo_url = _save_passport_photo(request.files.get("passport_photo"), membership_no)
@@ -100,18 +102,19 @@ def register():
             savings_frequency=request.form.get("savings_frequency"),
             remarks=request.form.get("remarks"),
             passport_photo_url=photo_url,
+            payout_account_number=request.form.get("payout_account_number", "").strip(),
+            payout_bank_name=request.form.get("payout_bank_name", "").strip(),
+            payout_account_name=request.form.get("payout_account_name", "").strip(),
+            referred_by_id=referred_by_id,
             date_joined=datetime.utcnow(),
         )
         member.set_password(password)
 
         db.session.add(member)
-        db.session.flush()  # get member.id before creating the savings account
+        db.session.flush()
 
         db.session.add(SavingsAccount(member_id=member.id, balance=0))
         db.session.commit()
-
-        # NOTE: if a payment gateway is ever added back, virtual-account
-        # creation would happen here on registration.
 
         flash(
             f"Account created! Your membership number is {member.membership_no}. "
