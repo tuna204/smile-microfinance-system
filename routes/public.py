@@ -37,7 +37,12 @@ def faq():
 
 @public_bp.route("/membership")
 def membership():
-    return render_template("public/membership.html")
+    # Captures ?ref=<membership_no> from a referral link (e.g. shared
+    # from someone's dashboard) and passes it through so the hidden
+    # form field can be pre-filled — see auth.py's register() for where
+    # this actually gets used.
+    referral_prefill = request.args.get("ref", "").strip().upper()
+    return render_template("public/membership.html", referral_prefill=referral_prefill)
 
 
 @public_bp.route("/contact", methods=["GET", "POST"])
@@ -53,7 +58,7 @@ def contact():
 
         try:
             send_contact_message(full_name, email, message)
-            flash("Thanks your message has been sent. We'll get back to you soon.", "success")
+            flash("Thanks — your message has been sent. We'll get back to you soon.", "success")
         except Exception as e:
             current_app.logger.error(f"Contact form email failed: {e}")
             flash("Sorry, something went wrong sending your message. Please try WhatsApp or email us directly.", "error")
