@@ -13,8 +13,10 @@
     <span class="label">Total Members</span>
   </div>
   <div class="app-stat-card">
-    <span class="num">{{ pending_review|length }}</span>
-    <span class="label">Awaiting Review</span>
+    <a href="{{ url_for('admin.referral_payouts') }}" style="text-decoration:none;">
+      <span class="num">{{ pending_referrals_count }}</span>
+      <span class="label">Referral Payouts Due →</span>
+    </a>
   </div>
   <div class="app-stat-card" style="display:flex; align-items:center; justify-content:center;">
     <a href="{{ url_for('admin.record_payment') }}" class="btn btn-primary">+ Record a Payment</a>
