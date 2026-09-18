@@ -1,153 +1,144 @@
-"""
-The ledger service is the ONLY place in the codebase allowed to change a
-member's balance. Never edit SavingsAccount.balance directly anywhere
-else — always go through record_deposit() so every change is logged.
-"""
-from datetime import datetime
-from decimal import Decimal
-from extensions import db
-from models import Transaction, SavingsAccount, Member
+from functools import wraps
+from flask import Blueprint, render_template, redirect, url_for, flash, abort, request
+from flask_login import login_required, current_user
 
-REVIEW_THRESHOLD_NGN = Decimal("500000")
-REGISTRATION_FEE_NGN = Decimal("5000")
-REFERRAL_BONUS_NGN = Decimal("1000")
+from models import Member
+from services.ledger import needs_review, mark_reviewed, record_deposit, confirm_registration_fee, mark_referral_paid
+from services.notify import send_payment_email, send_payment_sms
+
+admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 
-def record_deposit(member, amount, source="manual", gateway_reference=None, narration=None):
-    """Create a transaction for a deposit and reflect it in the member's
-    savings balance. Returns the Transaction row."""
-    amount = Decimal(str(amount))
+def admin_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwargs):
+        if not current_user.is_authenticated or not current_user.is_admin():
+            abort(403)
+        return f(*args, **kwargs)
+    return wrapper
 
-    txn = Transaction(
-        member_id=member.id,
-        type="deposit",
-        amount=amount,
-        status="reflected",
-        source=source,
-        gateway_reference=gateway_reference,
-        narration=narration,
-        reflected_at=datetime.utcnow(),
+
+@admin_bp.route("/")
+@login_required
+@admin_required
+def home():
+    from models import Transaction
+    members_count = Member.query.filter_by(role="member").count()
+    pending_review = [
+        txn for txn in Transaction.query.filter_by(status="reflected").all()
+        if needs_review(txn)
+    ]
+    pending_referrals_count = Transaction.query.filter_by(
+        type="referral_bonus", status="pending_payout"
+    ).count()
+    return render_template(
+        "admin/home.html",
+        members_count=members_count,
+        pending_review=pending_review,
+        pending_referrals_count=pending_referrals_count,
     )
 
-    account = member.savings_account
-    if account is None:
-        account = SavingsAccount(member_id=member.id, balance=0)
-        db.session.add(account)
 
-    account.balance = (account.balance or Decimal("0")) + amount
-    account.updated_at = datetime.utcnow()
+@admin_bp.route("/record-payment", methods=["GET", "POST"])
+@login_required
+@admin_required
+def record_payment():
+    if request.method == "POST":
+        membership_no = request.form.get("membership_no", "").strip().upper()
+        payment_type = request.form.get("payment_type", "savings")
 
-    db.session.add(txn)
-    db.session.commit()
-    return txn
+        member = Member.query.filter_by(membership_no=membership_no).first()
+        if not member:
+            flash(f"No member found with membership number {membership_no}.", "error")
+            return redirect(url_for("admin.record_payment"))
 
+        if payment_type == "registration_fee":
+            if member.registration_fee_paid:
+                flash(f"{member.full_name} ({member.membership_no}) is already activated.", "error")
+                return redirect(url_for("admin.record_payment"))
 
-def create_deposit_request(member, amount, narration=None):
-    """A member saying 'I intend to save this amount' — creates a PENDING
-    transaction for visibility only. Does NOT touch the balance."""
-    amount = Decimal(str(amount))
-    txn = Transaction(
-        member_id=member.id,
-        type="deposit",
-        amount=amount,
-        status="pending",
-        source="member_request",
-        narration=narration or "Member requested to save",
-    )
-    db.session.add(txn)
-    db.session.commit()
-    return txn
-
-
-def confirm_registration_fee(member, admin_member=None):
-    """Confirms the one-time ₦5,000 registration fee and activates the
-    member. Does NOT touch the savings balance — this fee isn't the
-    member's money.
-
-    If this member was referred by someone (member.referred_by_id), this
-    is also the moment a ₦1,000 referral bonus becomes owed to that
-    referrer — created here as a separate pending payout, since we only
-    want to reward referrals of real, paying members, not bare signups.
-    """
-    if member.registration_fee_paid:
-        return None  # already activated — avoid a duplicate transaction
-
-    txn = Transaction(
-        member_id=member.id,
-        type="registration_fee",
-        amount=REGISTRATION_FEE_NGN,
-        status="reflected",
-        source="admin_action",
-        narration=(
-            f"Registration fee confirmed by {admin_member.full_name}"
-            if admin_member else "Registration fee confirmed"
-        ),
-        reflected_at=datetime.utcnow(),
-    )
-    db.session.add(txn)
-
-    member.registration_fee_paid = True
-    member.is_active_member = True
-
-    # Referral bonus — only fires once, right here, only for real activations.
-    if member.referred_by_id:
-        referrer = Member.query.get(member.referred_by_id)
-        if referrer:
-            bonus_txn = Transaction(
-                member_id=referrer.id,
-                type="referral_bonus",
-                amount=REFERRAL_BONUS_NGN,
-                status="pending_payout",
-                source="system",
-                narration=f"Referral bonus for referring {member.full_name} ({member.membership_no})",
+            confirm_registration_fee(member, admin_member=current_user)
+            flash(
+                f"Registration fee confirmed for {member.full_name} ({member.membership_no}). "
+                f"Membership is now active."
+                + (" A referral bonus is now pending payout for their referrer." if member.referred_by_id else ""),
+                "success",
             )
-            db.session.add(bonus_txn)
+            return redirect(url_for("admin.record_payment"))
 
-    db.session.commit()
-    return txn
+        amount = request.form.get("amount", "").strip()
+        narration = request.form.get("narration", "").strip()
+
+        try:
+            amount_val = float(amount)
+            if amount_val <= 0:
+                raise ValueError
+        except ValueError:
+            flash("Enter a valid amount greater than zero.", "error")
+            return redirect(url_for("admin.record_payment"))
+
+        txn = record_deposit(
+            member,
+            amount=amount_val,
+            source="admin_action",
+            narration=narration or f"Bank transfer confirmed by {current_user.full_name}",
+        )
+
+        try:
+            send_payment_email(member, amount_val, member.savings_account.balance)
+        except Exception as e:
+            flash(f"Payment recorded, but email notification failed: {e}", "error")
+
+        try:
+            send_payment_sms(member, amount_val)
+        except Exception as e:
+            flash(f"Payment recorded, but SMS notification failed: {e}", "error")
+
+        flash(
+            f"₦{amount_val:,.2f} recorded for {member.full_name} ({member.membership_no}). "
+            f"New balance: ₦{member.savings_account.balance:,.2f}",
+            "success",
+        )
+        return redirect(url_for("admin.record_payment"))
+
+    return render_template("admin/record_payment.html")
 
 
-def mark_referral_paid(txn, admin_member):
-    """Admin confirms they've manually sent the ₦1,000 to the referrer's
-    own bank account (member.payout_account_number etc.)."""
-    txn.status = "paid_out"
-    txn.reviewed_at = datetime.utcnow()
-    txn.reviewed_by_id = admin_member.id
-    db.session.commit()
-    return txn
+@admin_bp.route("/referral-payouts")
+@login_required
+@admin_required
+def referral_payouts():
+    from models import Transaction
+    pending = (
+        Transaction.query.filter_by(type="referral_bonus", status="pending_payout")
+        .order_by(Transaction.created_at.asc()).all()
+    )
+    # Attach the referrer member object to each row for the template
+    rows = [(txn, Member.query.get(txn.member_id)) for txn in pending]
+    return render_template("admin/referral_payouts.html", rows=rows)
 
 
-def needs_review(txn):
-    """Whether this transaction should be surfaced in the admin
-    'awaiting review' queue."""
-    return txn.status == "reflected" and txn.type == "deposit" and txn.amount >= REVIEW_THRESHOLD_NGN
+@admin_bp.route("/referral-payouts/<int:txn_id>/mark-paid", methods=["POST"])
+@login_required
+@admin_required
+def mark_referral_payout_paid(txn_id):
+    from models import Transaction
+    txn = Transaction.query.get_or_404(txn_id)
+    if txn.type != "referral_bonus" or txn.status != "pending_payout":
+        flash("This isn't a pending referral payout.", "error")
+        return redirect(url_for("admin.referral_payouts"))
+
+    mark_referral_paid(txn, current_user)
+    flash(f"Referral bonus #{txn.id} marked as paid out.", "success")
+    return redirect(url_for("admin.referral_payouts"))
 
 
-def mark_reviewed(txn, admin_member):
-    txn.status = "reviewed"
-    txn.reviewed_at = datetime.utcnow()
-    txn.reviewed_by_id = admin_member.id
-    db.session.commit()
-    return txn
-
-
-def recompute_balance(member):
-    """Rebuild a member's balance from the transaction history — audit
-    tool only, should never be needed if record_deposit() is the only
-    write path. Deliberately excludes registration_fee and
-    referral_bonus types, since neither is savings."""
-    total = Decimal("0")
-    for txn in member.transactions.filter(
-        Transaction.status.in_(["reflected", "reviewed"]),
-        Transaction.type.in_(["deposit", "loan_disbursement", "investment_payout", "dividend"]),
-    ):
-        if txn.type in ("deposit", "loan_disbursement", "investment_payout", "dividend"):
-            total += txn.amount
-        elif txn.type in ("withdrawal", "loan_repayment", "investment_deposit"):
-            total -= txn.amount
-
-    account = member.savings_account
-    if account:
-        account.balance = total
-        db.session.commit()
-    return total
+@admin_bp.route("/review/<int:txn_id>/approve", methods=["POST"])
+@login_required
+@admin_required
+def approve_review(txn_id):
+    from models import Transaction
+    txn = Transaction.query.get_or_404(txn_id)
+    mark_reviewed(txn, current_user)
+    flash(f"Transaction #{txn.id} marked as reviewed.", "success")
+    return redirect(url_for("admin.home"))
