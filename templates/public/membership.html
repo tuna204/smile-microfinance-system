@@ -1,184 +1,217 @@
-{% extends "base.html" %}
-{% block title %}Dashboard — Smile Cooperative{% endblock %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Membership — Smile Multipurpose Cooperative</title>
+<meta name="description" content="Register as a new member or log in to your Smile Multipurpose Cooperative account.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
 
-<div class="app-profile-card">
-  {% if member.passport_photo_url %}
-    <img src="{{ member.passport_photo_url }}" alt="{{ member.full_name }}" class="app-profile-photo">
-  {% else %}
-    <div class="app-profile-photo app-profile-initials">{{ member.full_name[0]|upper }}</div>
-  {% endif %}
-  <div>
-    <h1 class="app-profile-name">{{ member.full_name }}</h1>
-    <p class="app-profile-email">{{ member.email }}</p>
-    <span class="app-membership-no">{{ member.membership_no }}</span>
+<header class="site-header">
+  <div class="wrap">
+    <a href="{{ url_for('public.index') }}" class="logo">Smile<span>.</span></a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="{{ url_for('public.about') }}">About</a></li>
+        <li><a href="{{ url_for('public.products') }}">Products</a></li>
+        <li><a href="{{ url_for('public.how_it_works') }}">How It Works</a></li>
+        <li><a href="{{ url_for('public.refer_and_earn') }}">Refer &amp; Earn</a></li>
+        <li><a href="{{ url_for('public.faq') }}">FAQ</a></li>
+        <li><a href="{{ url_for('public.contact') }}">Contact</a></li>
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <a href="{{ url_for('public.membership') }}#login" class="btn btn-ghost">Member Login</a>
+      <a href="{{ url_for('public.membership') }}#register" class="btn btn-primary">Join Smile</a>
+    </div>
+    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
   </div>
-</div>
+</header>
 
-{% if not member.registration_fee_paid %}
-  <div class="app-payin-box" style="border:2px solid var(--gold); margin-bottom:28px;">
-    <strong>Activate your membership</strong>
-    <p style="margin-top:6px;">Pay a one-time registration fee of <strong>₦{{ "{:,.2f}".format(registration_fee_amount) }}</strong> to unlock savings, loans and investments.</p>
-    <p class="form-note" style="margin-top:8px;">Use your membership number as the transfer description:</p>
-    <div class="app-payin-ref">{{ member.membership_no }}</div>
+<section class="hero" style="padding:60px 0 70px;">
+  <div class="wrap" style="display:block; text-align:center;">
+    <span class="eyebrow" style="color:var(--gold-dim); justify-content:center;">New Member or Existing?</span>
+    <h1 style="font-size:var(--step-3);">We're excited to meet you.</h1>
+    <p class="lede" style="margin-left:auto; margin-right:auto; text-align:center;">
+      {% if referral_prefill %}You were invited by a Smile member — let's get you set up.{% else %}Let's get started.{% endif %}
+    </p>
+  </div>
+</section>
 
-    <div class="app-bank-details">
-      <div class="row"><span class="label">Account Number</span><span class="value">0450905649</span></div>
-      <div class="row"><span class="label">Bank Name</span><span class="value">Wema Bank Plc</span></div>
-      <div class="row"><span class="label">Account Name</span><span class="value">Smile Multipurpose Cooperative Society</span></div>
+<section>
+  <div class="wrap">
+
+    <div class="member-tabs">
+      <button class="member-tab-btn active" data-target="register">New Member</button>
+      <button class="member-tab-btn" data-target="login">Existing Member</button>
     </div>
 
-    <a class="app-whatsapp-link" target="_blank" rel="noopener"
-       href="https://wa.me/2347046409000?text=Hi%2C%20I%20just%20paid%20my%20%E2%82%A65%2C000%20registration%20fee.%20My%20membership%20number%20is%20{{ member.membership_no }}%2C%20find%20my%20receipt%20attached.">
-      Send receipt on WhatsApp
-    </a>
-    <p class="form-note" style="margin-top:10px;">Your membership activates once staff confirm the transfer.</p>
-  </div>
-{% endif %}
+    <div class="member-panel active" id="register">
+      <div class="form-card">
+        <span class="eyebrow">New Membership Registration</span>
+        <h3 style="margin-top:10px;">Create your account</h3>
+        <form method="POST" action="{{ url_for('auth.register') }}" enctype="multipart/form-data" style="margin-top:28px;">
+          <input type="hidden" name="referral_code" value="{{ referral_prefill or '' }}">
 
-<div class="app-referral-box">
-  <div class="app-referral-label">Refer &amp; Earn</div>
-  <p style="margin-top:8px;">Share your link — earn ₦1,000 for every friend who joins and pays their registration fee.</p>
-  <div class="app-referral-link-row">
-    <input type="text" readonly value="{{ referral_link }}" id="referral-link-input">
-    <button type="button" class="btn btn-primary" onclick="copyReferralLink()">Copy Link</button>
-  </div>
-  <p class="app-referral-count">{{ referral_count }} member{{ 's' if referral_count != 1 else '' }} referred so far</p>
-</div>
-
-<div class="app-balance-card">
-  <div class="app-balance-label">Savings Balance</div>
-  <div class="app-balance-amount">₦{{ "{:,.2f}".format(balance) }}</div>
-</div>
-
-<div class="app-section">
-  <div class="app-section-head">
-    <h3>Add Money</h3>
-  </div>
-
-  {% if member.registration_fee_paid %}
-    <div class="app-form-card">
-      <form method="POST" action="{{ url_for('dashboard.request_deposit') }}" style="display:flex; gap:12px; align-items:end; flex-wrap:wrap;">
-        <div class="field" style="flex:1; min-width:200px; margin-bottom:0;">
-          <label for="amount">How much do you want to save?</label>
-          <input type="number" id="amount" name="amount" step="0.01" min="1" placeholder="e.g. 10000" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Generate Payment Details</button>
-      </form>
-    </div>
-
-    {% if pending_requests %}
-      <div style="margin-top:20px;">
-        <p style="font-size:0.9rem; color:#4A4838; margin-bottom:12px;">Transfer any of these amounts to the account below, using your membership number as the description:</p>
-        <div class="app-payin-box">
-          <div class="app-payin-ref">{{ member.membership_no }}</div>
-          <div class="app-bank-details">
-            <div class="row"><span class="label">Account Number</span><span class="value">0450905649</span></div>
-            <div class="row"><span class="label">Bank Name</span><span class="value">Wema Bank Plc</span></div>
-            <div class="row"><span class="label">Account Name</span><span class="value">Smile Multipurpose Cooperative Society</span></div>
-          </div>
-          <a class="app-whatsapp-link" target="_blank" rel="noopener"
-             href="https://wa.me/2347046409000?text=Hi%2C%20I%20just%20made%20a%20savings%20transfer.%20My%20membership%20number%20is%20{{ member.membership_no }}%2C%20find%20my%20receipt%20attached.">
-            Send receipt on WhatsApp
-          </a>
-        </div>
-        <div class="app-list" style="margin-top:14px;">
-          {% for req in pending_requests %}
-            <div class="app-row">
-              <div class="app-row-main">
-                <span class="app-row-title">Requested to save ₦{{ "{:,.2f}".format(req.amount) }}</span>
-                <span class="app-row-sub">{{ req.created_at.strftime('%d %b %Y') }}</span>
+          <div class="form-grid">
+            <div class="field full">
+              <label for="reg-photo">Passport Photograph</label>
+              <div class="upload-box" id="reg-photo-box">
+                <img id="reg-photo-preview" style="display:none; max-height:120px; border-radius:8px; margin-bottom:8px;">
+                <span id="reg-photo-label">Click to upload a passport photograph</span>
               </div>
-              <span class="app-pill app-pill-pending">Awaiting transfer</span>
+              <input type="file" id="reg-photo" name="passport_photo" accept="image/png, image/jpeg" style="display:none;">
+              <p class="form-note" style="margin-top:6px;">JPG or PNG, under 2MB.</p>
             </div>
-          {% endfor %}
-        </div>
+            <div class="field">
+              <label for="reg-name">Full Name</label>
+              <input id="reg-name" name="full_name" type="text" required>
+            </div>
+            <div class="field">
+              <label for="reg-gender">Gender</label>
+              <select id="reg-gender" name="gender" required>
+                <option value="">Select</option>
+                <option>Female</option>
+                <option>Male</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="reg-dob">Date of Birth</label>
+              <input id="reg-dob" name="date_of_birth" type="date" required>
+            </div>
+            <div class="field">
+              <label for="reg-phone">Phone Number</label>
+              <input id="reg-phone" name="phone" type="tel" required>
+            </div>
+            <div class="field">
+              <label for="reg-email">Email Address</label>
+              <input id="reg-email" name="email" type="email" required>
+            </div>
+            <div class="field">
+              <label for="reg-occupation">Occupation</label>
+              <input id="reg-occupation" name="occupation" type="text">
+            </div>
+            <div class="field full">
+              <label for="reg-address">Residential Address</label>
+              <input id="reg-address" name="residential_address" type="text" required>
+            </div>
+            <div class="field">
+              <label for="reg-kin">Next of Kin</label>
+              <input id="reg-kin" name="next_of_kin" type="text">
+            </div>
+            <div class="field">
+              <label for="reg-password">Password</label>
+              <input id="reg-password" name="password" type="password" required minlength="8">
+            </div>
+            <div class="field">
+              <label for="reg-confirm-password">Confirm Password</label>
+              <input id="reg-confirm-password" name="confirm_password" type="password" required minlength="8">
+            </div>
+            <div class="field full">
+              <label>Savings Frequency</label>
+              <div class="field-radio-group">
+                <label class="field-radio"><input type="radio" name="savings_frequency" value="Daily"> Daily</label>
+                <label class="field-radio"><input type="radio" name="savings_frequency" value="Weekly"> Weekly</label>
+                <label class="field-radio"><input type="radio" name="savings_frequency" value="Monthly"> Monthly</label>
+                <label class="field-radio"><input type="radio" name="savings_frequency" value="Occasionally"> Occasionally</label>
+              </div>
+            </div>
+
+            <div class="field full">
+              <label style="font-size:0.95rem; color:var(--emerald); font-weight:700;">Your Bank Account Details (for payouts — referral bonuses, dividends, etc.)</label>
+            </div>
+            <div class="field">
+              <label for="reg-payout-acct-no">Account Number</label>
+              <input id="reg-payout-acct-no" name="payout_account_number" type="text" required>
+            </div>
+            <div class="field">
+              <label for="reg-payout-bank">Bank Name</label>
+              <input id="reg-payout-bank" name="payout_bank_name" type="text" required>
+            </div>
+            <div class="field full">
+              <label for="reg-payout-name">Account Name</label>
+              <input id="reg-payout-name" name="payout_account_name" type="text" required>
+            </div>
+
+            <div class="field full">
+              <label for="reg-remarks">Remarks</label>
+              <textarea id="reg-remarks" name="remarks" rows="3"></textarea>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary form-submit">Create Account</button>
+          <p class="form-note">Registration requires a one-time ₦5,000 early registration fee. You'll receive next steps by email after submitting.</p>
+        </form>
       </div>
-    {% endif %}
-  {% else %}
-    <div class="app-empty">Activate your membership above to start saving.</div>
-  {% endif %}
-</div>
-
-<div class="app-section">
-  <div class="app-section-head">
-    <h3>Loans</h3>
-  </div>
-  {% if not member.registration_fee_paid %}
-    <div class="app-empty">Activate your membership above to access loans.</div>
-  {% elif loans %}
-    <div class="app-list">
-      {% for loan in loans %}
-        <div class="app-row">
-          <div class="app-row-main">
-            <span class="app-row-title">{{ loan.loan_type }}</span>
-            <span class="app-row-sub">Requested ₦{{ "{:,.2f}".format(loan.amount_requested) }}</span>
-          </div>
-          <span class="app-pill app-pill-{{ loan.status }}">{{ loan.status }}</span>
-        </div>
-      {% endfor %}
     </div>
-  {% else %}
-    <div class="app-empty">No loans yet.</div>
-  {% endif %}
-</div>
 
-<div class="app-section">
-  <div class="app-section-head">
-    <h3>Investments</h3>
-  </div>
-  {% if not member.registration_fee_paid %}
-    <div class="app-empty">Activate your membership above to access investments.</div>
-  {% elif investments %}
-    <div class="app-list">
-      {% for inv in investments %}
-        <div class="app-row">
-          <div class="app-row-main">
-            <span class="app-row-title">₦{{ "{:,.2f}".format(inv.principal_amount) }} — {{ inv.tenor_months }} months</span>
-            <span class="app-row-sub">{{ inv.return_rate_percent }}% return</span>
+    <div class="member-panel" id="login">
+      <div class="form-card" style="max-width:440px;">
+        <span class="eyebrow">Personal Login</span>
+        <h3 style="margin-top:10px;">Welcome back, partner</h3>
+        <form method="POST" action="{{ url_for('auth.login') }}" style="margin-top:28px; display:grid; gap:20px;">
+          <div class="field">
+            <label for="login-email">Email or Membership ID</label>
+            <input id="login-email" name="identifier" type="text" required>
           </div>
-          <span class="app-pill app-pill-{{ inv.status }}">{{ inv.status }}</span>
-        </div>
-      {% endfor %}
+          <div class="field">
+            <label for="login-pass">Password</label>
+            <input id="login-pass" name="password" type="password" required>
+          </div>
+          <button type="submit" class="btn btn-primary form-submit">Log In to Dashboard</button>
+          <p class="form-note">Once logged in, you'll see your savings, share capital, investments, loan history and dividend history in one dashboard.</p>
+        </form>
+      </div>
     </div>
-  {% else %}
-    <div class="app-empty">No investments yet.</div>
-  {% endif %}
-</div>
 
-<div class="app-section">
-  <div class="app-section-head">
-    <h3>Recent Transactions</h3>
   </div>
-  {% if transactions %}
-    <div class="app-list">
-      {% for txn in transactions %}
-        <div class="app-row">
-          <div class="app-row-main">
-            <span class="app-row-title">{{ txn.type.replace('_', ' ')|title }}</span>
-            <span class="app-row-sub">{{ txn.created_at.strftime('%d %b %Y') }}{% if txn.narration %} — {{ txn.narration }}{% endif %}</span>
-          </div>
-          <div style="text-align:right;">
-            <div class="app-row-amount">₦{{ "{:,.2f}".format(txn.amount) }}</div>
-            <span class="app-pill app-pill-{{ txn.status }}">{{ txn.status }}</span>
-          </div>
-        </div>
-      {% endfor %}
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">Smile<span style="color:var(--gold)">.</span></div>
+        <p style="color:rgba(251,246,234,0.6); font-size:0.9rem;">Your Smile remains Our Joy. Building Africa's largest and most trusted cooperative ecosystem.</p>
+      </div>
+      <div>
+        <h5>Explore</h5>
+        <ul>
+          <li><a href="{{ url_for('public.about') }}">About Us</a></li>
+          <li><a href="{{ url_for('public.products') }}">Products</a></li>
+          <li><a href="{{ url_for('public.how_it_works') }}">How It Works</a></li>
+          <li><a href="{{ url_for('public.refer_and_earn') }}">Refer &amp; Earn</a></li>
+          <li><a href="{{ url_for('public.faq') }}">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Offices</h5>
+        <ul>
+          <li>Head Office — Kurudu, Abuja</li>
+          <li>Branch — Mararaba, Nasarawa</li>
+        </ul>
+      </div>
+      <div>
+        <h5>Contact</h5>
+        <ul>
+          <li><a href="tel:+2347046409000">+234 704 640 9000</a></li>
+          <li><a href="mailto:info@mysmile.ng">info@mysmile.ng</a></li>
+          <li><a href="{{ url_for('public.contact') }}">Send a message →</a></li>
+        </ul>
+      </div>
     </div>
-  {% else %}
-    <div class="app-empty">No transactions yet.</div>
-  {% endif %}
-</div>
+    <div class="footer-bottom">
+      <span>© 2026 Smile Multipurpose Cooperative Society Limited.</span>
+    </div>
+  </div>
+</footer>
 
-<script>
-function copyReferralLink() {
-  const input = document.getElementById('referral-link-input');
-  input.select();
-  navigator.clipboard.writeText(input.value).then(() => {
-    event.target.textContent = 'Copied!';
-    setTimeout(() => { event.target.textContent = 'Copy Link'; }, 2000);
-  });
-}
-</script>
-
-{% endblock %}
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
