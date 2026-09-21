@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Add Admin - Smile Cooperative{% endblock %}
+{% block content %}
+
+<div class="app-page-head">
+  <span class="eyebrow">Staff Area</span>
+  <h1>Promote to Admin</h1>
+  <p>Only existing admins can see this page. The person must already have a registered account - this just flips their role, it doesn't create one or set a password.</p>
+</div>
+
+<div class="app-form-card">
+  <form method="POST">
+    <div class="field" style="margin-bottom:22px;">
+      <label for="identifier">Their email or membership number</label>
+      <input type="text" id="identifier" name="identifier" placeholder="name@example.com or SM-2026-XXXXX" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Make Admin</button>
+  </form>
+</div>
+
+<p style="margin-top:24px;"><a href="{{ url_for('admin.home') }}">&larr; Back to admin overview</a></p>
+
+{% endblock %}
