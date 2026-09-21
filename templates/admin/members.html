@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Members — Smile Cooperative{% endblock %}
+{% block content %}
+
+<div class="app-page-head">
+  <span class="eyebrow">Staff Area</span>
+  <h1>Members</h1>
+  <p>Everyone's submitted payout bank details — for loan disbursement, dividends, or looking someone up.</p>
+</div>
+
+<div class="app-form-card" style="max-width:none; margin-bottom:24px;">
+  <form method="GET" style="display:flex; gap:12px; align-items:end; flex-wrap:wrap;">
+    <div class="field" style="flex:1; min-width:220px; margin-bottom:0;">
+      <label for="q">Search by name, membership number, or email</label>
+      <input type="text" id="q" name="q" value="{{ q }}" placeholder="e.g. SM-2026-12345">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+</div>
+
+{% if members %}
+  <div class="app-list">
+    {% for m in members %}
+      <div class="app-row" style="align-items:flex-start;">
+        <div class="app-row-main">
+          <span class="app-row-title">{{ m.full_name }} ({{ m.membership_no }})</span>
+          <span class="app-row-sub">{{ m.email }} · {{ m.phone }}</span>
+          {% if m.payout_account_number %}
+            <span class="app-row-sub" style="margin-top:6px; font-family:var(--font-mono);">
+              {{ m.payout_account_number }} — {{ m.payout_bank_name }} — {{ m.payout_account_name }}
+            </span>
+          {% else %}
+            <span class="app-row-sub" style="color:#8A2A20;">No payout bank details on file.</span>
+          {% endif %}
+        </div>
+        <span class="app-pill app-pill-{{ 'approved' if m.registration_fee_paid else 'pending' }}">
+          {{ 'Active' if m.registration_fee_paid else 'Not activated' }}
+        </span>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <div class="app-empty">No members found.</div>
+{% endif %}
+
+<p style="margin-top:24px;"><a href="{{ url_for('admin.home') }}">&larr; Back to admin overview</a></p>
+
+{% endblock %}
