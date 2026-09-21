@@ -9,8 +9,16 @@
 
 <div class="app-stat-grid">
   <div class="app-stat-card">
-    <span class="num">{{ members_count }}</span>
-    <span class="label">Total Members</span>
+    <a href="{{ url_for('admin.members') }}" style="text-decoration:none;">
+      <span class="num">{{ members_count }}</span>
+      <span class="label">Total Members →</span>
+    </a>
+  </div>
+  <div class="app-stat-card">
+    <a href="{{ url_for('admin.pending_deposits') }}" style="text-decoration:none;">
+      <span class="num">{{ pending_deposits_count }}</span>
+      <span class="label">Pending Savings Requests →</span>
+    </a>
   </div>
   <div class="app-stat-card">
     <a href="{{ url_for('admin.referral_payouts') }}" style="text-decoration:none;">
@@ -18,9 +26,11 @@
       <span class="label">Referral Payouts Due →</span>
     </a>
   </div>
-  <div class="app-stat-card" style="display:flex; align-items:center; justify-content:center;">
-    <a href="{{ url_for('admin.record_payment') }}" class="btn btn-primary">+ Record a Payment</a>
-  </div>
+</div>
+
+<div class="app-section" style="display:flex; gap:14px; flex-wrap:wrap;">
+  <a href="{{ url_for('admin.record_payment') }}" class="btn btn-primary">+ Record a Payment</a>
+  <a href="{{ url_for('admin.promote_admin') }}" class="btn btn-ghost">+ Add Another Admin</a>
 </div>
 
 <div class="app-section">
