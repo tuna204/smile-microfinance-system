@@ -1,7 +1,7 @@
 """
 The ledger service is the ONLY place in the codebase allowed to change a
 member's balance. Never edit SavingsAccount.balance directly anywhere
-else — always go through record_deposit() so every change is logged.
+else.
 """
 from datetime import datetime
 from decimal import Decimal
@@ -14,8 +14,9 @@ REFERRAL_BONUS_NGN = Decimal("1000")
 
 
 def record_deposit(member, amount, source="manual", gateway_reference=None, narration=None):
-    """Create a transaction for a deposit and reflect it in the member's
-    savings balance. Returns the Transaction row."""
+    """Used by /admin/record-payment when staff manually enters an
+    amount with no prior member request — always creates a NEW
+    transaction row."""
     amount = Decimal(str(amount))
 
     txn = Transaction(
@@ -59,18 +60,40 @@ def create_deposit_request(member, amount, narration=None):
     return txn
 
 
+def approve_deposit_request(txn, admin_member=None):
+    """Approves a member's OWN pending savings request — the exact same
+    transaction row moves from 'pending' straight to 'approved', and the
+    balance is credited at that moment. Unlike record_deposit(), this
+    does NOT create a second transaction — it updates the request the
+    member already sees on their dashboard, so its status visibly flips
+    from 'Awaiting transfer' to 'Approved' in place."""
+    if txn.status != "pending" or txn.source != "member_request":
+        return None
+
+    member = Member.query.get(txn.member_id)
+    account = member.savings_account
+    if account is None:
+        account = SavingsAccount(member_id=member.id, balance=0)
+        db.session.add(account)
+
+    account.balance = (account.balance or Decimal("0")) + txn.amount
+    account.updated_at = datetime.utcnow()
+
+    txn.status = "approved"
+    txn.reflected_at = datetime.utcnow()
+    if admin_member:
+        txn.reviewed_by_id = admin_member.id
+
+    db.session.commit()
+    return txn
+
+
 def confirm_registration_fee(member, admin_member=None):
     """Confirms the one-time ₦5,000 registration fee and activates the
-    member. Does NOT touch the savings balance — this fee isn't the
-    member's money.
-
-    If this member was referred by someone (member.referred_by_id), this
-    is also the moment a ₦1,000 referral bonus becomes owed to that
-    referrer — created here as a separate pending payout, since we only
-    want to reward referrals of real, paying members, not bare signups.
-    """
+    member. Does NOT touch the savings balance. Triggers a ₦1,000
+    referral bonus payout (pending) if this member was referred."""
     if member.registration_fee_paid:
-        return None  # already activated — avoid a duplicate transaction
+        return None
 
     txn = Transaction(
         member_id=member.id,
@@ -89,7 +112,6 @@ def confirm_registration_fee(member, admin_member=None):
     member.registration_fee_paid = True
     member.is_active_member = True
 
-    # Referral bonus — only fires once, right here, only for real activations.
     if member.referred_by_id:
         referrer = Member.query.get(member.referred_by_id)
         if referrer:
@@ -108,8 +130,6 @@ def confirm_registration_fee(member, admin_member=None):
 
 
 def mark_referral_paid(txn, admin_member):
-    """Admin confirms they've manually sent the ₦1,000 to the referrer's
-    own bank account (member.payout_account_number etc.)."""
     txn.status = "paid_out"
     txn.reviewed_at = datetime.utcnow()
     txn.reviewed_by_id = admin_member.id
@@ -118,8 +138,6 @@ def mark_referral_paid(txn, admin_member):
 
 
 def needs_review(txn):
-    """Whether this transaction should be surfaced in the admin
-    'awaiting review' queue."""
     return txn.status == "reflected" and txn.type == "deposit" and txn.amount >= REVIEW_THRESHOLD_NGN
 
 
@@ -132,13 +150,11 @@ def mark_reviewed(txn, admin_member):
 
 
 def recompute_balance(member):
-    """Rebuild a member's balance from the transaction history — audit
-    tool only, should never be needed if record_deposit() is the only
-    write path. Deliberately excludes registration_fee and
-    referral_bonus types, since neither is savings."""
+    """Audit tool only. Includes 'approved' now alongside 'reflected'/
+    'reviewed', since approve_deposit_request() uses that status."""
     total = Decimal("0")
     for txn in member.transactions.filter(
-        Transaction.status.in_(["reflected", "reviewed"]),
+        Transaction.status.in_(["reflected", "reviewed", "approved"]),
         Transaction.type.in_(["deposit", "loan_disbursement", "investment_payout", "dividend"]),
     ):
         if txn.type in ("deposit", "loan_disbursement", "investment_payout", "dividend"):
