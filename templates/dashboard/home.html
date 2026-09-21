@@ -30,7 +30,7 @@
 
     <a class="app-whatsapp-link" target="_blank" rel="noopener"
        href="https://wa.me/2347046409000?text=Hi%2C%20I%20just%20paid%20my%20%E2%82%A65%2C000%20registration%20fee.%20My%20membership%20number%20is%20{{ member.membership_no }}%2C%20find%20my%20receipt%20attached.">
-      Send receipt on WhatsApp
+      Click after Payment, Attach prove of transfer.
     </a>
     <p class="form-note" style="margin-top:10px;">Your membership activates once staff confirm the transfer.</p>
   </div>
@@ -38,7 +38,7 @@
 
 <div class="app-referral-box">
   <div class="app-referral-label">Refer &amp; Earn</div>
-  <p style="margin-top:8px;">Share your link - earn ₦1,000 for every friend who joins and pays their registration fee.</p>
+  <p style="margin-top:8px;">Share your link and wait for confirmation within 48hrs - earn ₦1,000 for every friend who joins and pays their registration fee.</p>
   <div class="app-referral-link-row">
     <input type="text" readonly value="{{ referral_link }}" id="referral-link-input">
     <button type="button" class="btn btn-primary" onclick="copyReferralLink()">Copy Link</button>
@@ -47,13 +47,13 @@
 </div>
 
 <div class="app-balance-card">
-  <div class="app-balance-label">Savings Balance</div>
+  <div class="app-balance-label">Your Savins</div>
   <div class="app-balance-amount">₦{{ "{:,.2f}".format(balance) }}</div>
 </div>
 
 <div class="app-section">
   <div class="app-section-head">
-    <h3>Add Money</h3>
+    <h3>Add Savings</h3>
   </div>
 
   {% if member.registration_fee_paid %}
@@ -63,7 +63,7 @@
           <label for="amount">How much do you want to save?</label>
           <input type="number" id="amount" name="amount" step="0.01" min="1" placeholder="e.g. 10000" required>
         </div>
-        <button type="submit" class="btn btn-primary">Generate Payment Details</button>
+        <button type="submit" class="btn btn-primary">Make a transfer</button>
       </form>
     </div>
 
@@ -79,7 +79,7 @@
           </div>
           <a class="app-whatsapp-link" target="_blank" rel="noopener"
              href="https://wa.me/2347046409000?text=Hi%2C%20I%20just%20made%20a%20savings%20transfer.%20My%20membership%20number%20is%20{{ member.membership_no }}%2C%20find%20my%20receipt%20attached.">
-            Send receipt on WhatsApp
+            Click after Payment, Attach prove of transfer.
           </a>
         </div>
         <div class="app-list" style="margin-top:14px;">
