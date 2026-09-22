@@ -2,15 +2,24 @@
 Notifications fired when staff confirms a bank transfer via
 /admin/record-payment. Email uses Flask-Mail (any SMTP provider —
 SendGrid/Mailgun recommended for production deliverability). SMS uses
-Termii, which is built for Nigerian numbers.
+Termii, which is built for Nigerian numbers. Contact-form messages use
+Resend instead, since it's more reliable for that path.
+
+send_notifications_async() is what routes should call for PAYMENT
+notifications — it runs send_payment_email/send_payment_sms in a
+background thread, so a slow or broken mail/SMS provider can never hang
+or crash the request the admin is waiting on. Failures are logged, not
+raised — by the time this runs, the money has already been credited, so
+a failed notification is a followup problem, not a reason to fail the
+whole action.
 """
+import threading
 import requests
 from flask import current_app
 from flask_mail import Message
 from extensions import mail
 from html import escape
 import resend
-
 
 
 def send_payment_email(member, amount, new_balance):
@@ -72,3 +81,40 @@ def send_contact_message(full_name, email, message):
     }
 
     return resend.Emails.send(params)
+
+
+def _send_notifications_background(app, member_id, amount):
+    """Runs in a background thread — needs its own app context since
+    Flask's current_app/request context doesn't carry over to a new
+    thread automatically."""
+    with app.app_context():
+        from models import Member
+        member = Member.query.get(member_id)
+        if not member:
+            return
+
+        try:
+            send_payment_email(member, amount, member.savings_account.balance)
+        except Exception as e:
+            app.logger.error(f"Background email notification failed for member {member_id}: {e}")
+
+        try:
+            send_payment_sms(member, amount)
+        except Exception as e:
+            app.logger.error(f"Background SMS notification failed for member {member_id}: {e}")
+
+
+def send_notifications_async(member, amount):
+    """Call this from routes instead of send_payment_email/send_payment_sms
+    directly, for PAYMENT confirmations. Fires both in a background
+    thread and returns immediately — the admin's request never waits on
+    email/SMS at all. (Contact-form messages still go through
+    send_contact_message() directly, unchanged — that path isn't the one
+    that was crashing.)"""
+    app = current_app._get_current_object()
+    thread = threading.Thread(
+        target=_send_notifications_background,
+        args=(app, member.id, amount),
+        daemon=True,
+    )
+    thread.start()
