@@ -7,7 +7,7 @@ from services.ledger import (
     needs_review, mark_reviewed, record_deposit, confirm_registration_fee,
     mark_referral_paid, approve_deposit_request,
 )
-from services.notify import send_payment_email, send_payment_sms
+from services.notify import send_notifications_async
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -50,11 +50,6 @@ def home():
 @login_required
 @admin_required
 def pending_deposits():
-    """The queue your director asked for: every member's own 'Add Money'
-    request, waiting for staff to approve once the transfer actually
-    arrives. Approving here flips the SAME row from pending to approved
-    (see services/ledger.py::approve_deposit_request) — the member sees
-    that exact status change on their own dashboard."""
     from models import Transaction
     pending = (
         Transaction.query.filter_by(type="deposit", status="pending", source="member_request")
@@ -77,14 +72,7 @@ def approve_pending_deposit(txn_id):
         return redirect(url_for("admin.pending_deposits"))
 
     member = Member.query.get(txn.member_id)
-    try:
-        send_payment_email(member, txn.amount, member.savings_account.balance)
-    except Exception as e:
-        flash(f"Approved, but email notification failed: {e}", "error")
-    try:
-        send_payment_sms(member, txn.amount)
-    except Exception as e:
-        flash(f"Approved, but SMS notification failed: {e}", "error")
+    send_notifications_async(member, txn.amount)  # fire-and-forget, never blocks
 
     flash(f"₦{txn.amount:,.2f} approved for {member.full_name} ({member.membership_no}).", "success")
     return redirect(url_for("admin.pending_deposits"))
@@ -94,10 +82,6 @@ def approve_pending_deposit(txn_id):
 @login_required
 @admin_required
 def record_payment():
-    """For payments staff learns about WITHOUT a prior member request
-    (e.g. someone transfers without generating a request first). If the
-    member already has a matching pending request, use the Pending
-    Deposits queue instead — this always creates a fresh transaction."""
     if request.method == "POST":
         membership_no = request.form.get("membership_no", "").strip().upper()
         payment_type = request.form.get("payment_type", "savings")
@@ -139,14 +123,7 @@ def record_payment():
             narration=narration or f"Bank transfer confirmed by {current_user.full_name}",
         )
 
-        try:
-            send_payment_email(member, amount_val, member.savings_account.balance)
-        except Exception as e:
-            flash(f"Payment recorded, but email notification failed: {e}", "error")
-        try:
-            send_payment_sms(member, amount_val)
-        except Exception as e:
-            flash(f"Payment recorded, but SMS notification failed: {e}", "error")
+        send_notifications_async(member, amount_val)  # fire-and-forget, never blocks
 
         flash(
             f"₦{amount_val:,.2f} recorded for {member.full_name} ({member.membership_no}). "
@@ -162,9 +139,6 @@ def record_payment():
 @login_required
 @admin_required
 def members():
-    """Directory of every member, including the payout bank details they
-    submitted at registration — for loan disbursement, dividends, or
-    just looking someone up. Optional search by name/membership number/email."""
     q = request.args.get("q", "").strip()
     query = Member.query.filter_by(role="member")
     if q:
@@ -182,9 +156,6 @@ def members():
 @login_required
 @admin_required
 def promote_admin():
-    """The permanent, safe replacement for the one-time secret-URL
-    bootstrap trick — only someone ALREADY an admin can reach this page
-    at all, so there's no public exposure risk."""
     if request.method == "POST":
         identifier = request.form.get("identifier", "").strip().lower()
         member = Member.query.filter(
@@ -245,27 +216,3 @@ def approve_review(txn_id):
     mark_reviewed(txn, current_user)
     flash(f"Transaction #{txn.id} marked as reviewed.", "success")
     return redirect(url_for("admin.home"))
-
-
-
-# ============================================================
-# TEMPORARY — paste this into routes/admin.py, anywhere below
-# the existing routes. DELETE IT once you've used it once.
-# This is ONLY needed for your very first admin ever — every
-# admin after this one gets added through /admin/promote-admin.
-# ============================================================
-
-@admin_bp.route("/bootstrap-first-admin/CHANGE-THIS-TO-SOMETHING-SECRET/<email>")
-def bootstrap_first_admin(email):
-    member = Member.query.filter_by(email=email.strip().lower()).first()
-
-    if not member:
-        return f"No member found with email {email}. Register that account first."
-
-    if member.role == "admin":
-        return f"{member.full_name} is already an admin."
-
-    member.role = "admin"
-    from extensions import db
-    db.session.commit()
-    return f"Done! {member.full_name} ({email}) is now an admin. DELETE THIS ROUTE NOW and push again."
