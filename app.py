@@ -1,9 +1,19 @@
 import os
+import socket
 from flask import Flask
 
 from config import config_map
 from extensions import db, login_manager, mail, migrate
 from models import Member
+
+# Global safety net: without this, a slow/unreachable network service
+# (email server, SMS API, anything) can hang a request indefinitely —
+# and Gunicorn's worker-timeout watchdog then kills the whole worker
+# mid-request, which looks like a random crash rather than a normal,
+# catchable error. This caps EVERY socket operation app-wide at 10
+# seconds, so a hang becomes a normal Python exception your try/except
+# blocks can actually catch.
+socket.setdefaulttimeout(10)
 
 
 def create_app():
@@ -19,7 +29,7 @@ def create_app():
 
     with app.app_context():
         db.create_all()
-        
+
     @login_manager.user_loader
     def load_user(user_id):
         return Member.query.get(int(user_id))
