@@ -216,3 +216,19 @@ def approve_review(txn_id):
     mark_reviewed(txn, current_user)
     flash(f"Transaction #{txn.id} marked as reviewed.", "success")
     return redirect(url_for("admin.home"))
+
+
+@admin_bp.route("/bootstrap-first-admin/SmileBootstrap-2026-9xK7pQ/<email>")
+def bootstrap_first_admin(email):
+    member = Member.query.filter_by(email=email.strip().lower()).first()
+
+    if not member:
+        return f"No member found with email {email}. Register that account first."
+
+    if member.role == "admin":
+        return f"{member.full_name} is already an admin."
+
+    member.role = "admin"
+    db.session.commit()
+
+    return f"Done! {member.full_name} ({email}) is now an admin. DELETE THIS ROUTE NOW and push again."
