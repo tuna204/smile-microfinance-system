@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, abort, r
 from flask_login import login_required, current_user
 
 from models import Member
+from extensions import db
 from services.ledger import (
     needs_review, mark_reviewed, record_deposit, confirm_registration_fee,
     mark_referral_paid, approve_deposit_request,
