@@ -50,11 +50,11 @@ def create_app():
 # is actually active, without exposing the password or host.
 # ============================================================
 
-    @app.route("/healthz")
-    def healthz():
-        db_url = app.config.get("SQLALCHEMY_DATABASE_URI", "")
-        engine = db_url.split("://")[0] if "://" in db_url else "unknown"
-        return {
+@app.route("/healthz")
+def healthz():
+    db_url = app.config.get("SQLALCHEMY_DATABASE_URI", "")
+    engine = db_url.split("://")[0] if "://" in db_url else "unknown"
+    return {
             "status": "ok",
             "database_engine": engine,  # should say "postgresql" — if it says "sqlite", that's the bug
         }
