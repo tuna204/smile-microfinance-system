@@ -6,13 +6,9 @@ from config import config_map
 from extensions import db, login_manager, mail, migrate
 from models import Member
 
-# Global safety net: without this, a slow/unreachable network service
-# (email server, SMS API, anything) can hang a request indefinitely —
-# and Gunicorn's worker-timeout watchdog then kills the whole worker
-# mid-request, which looks like a random crash rather than a normal,
-# catchable error. This caps EVERY socket operation app-wide at 10
-# seconds, so a hang becomes a normal Python exception your try/except
-# blocks can actually catch.
+
+# Global safety net:
+# Prevent slow/unreachable network services from hanging forever.
 socket.setdefaulttimeout(10)
 
 
@@ -20,7 +16,9 @@ def create_app():
     app = Flask(__name__)
 
     env = os.environ.get("FLASK_ENV", "production")
-    app.config.from_object(config_map.get(env, config_map["production"]))
+    app.config.from_object(
+        config_map.get(env, config_map["production"])
+    )
 
     db.init_app(app)
     login_manager.init_app(app)
@@ -44,23 +42,29 @@ def create_app():
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(admin_bp)
 
-  # ============================================================
-# REPLACE the existing @app.route("/healthz") block in app.py
-# with this version — it now also reports which database engine
-# is actually active, without exposing the password or host.
-# ============================================================
+    # Health check
+    @app.route("/healthz")
+    def healthz():
+        db_url = app.config.get(
+            "SQLALCHEMY_DATABASE_URI", ""
+        )
 
-@app.route("/healthz")
-def healthz():
-    db_url = app.config.get("SQLALCHEMY_DATABASE_URI", "")
-    engine = db_url.split("://")[0] if "://" in db_url else "unknown"
-    return {
+        engine = (
+            db_url.split("://")[0]
+            if "://" in db_url
+            else "unknown"
+        )
+
+        return {
             "status": "ok",
-            "database_engine": engine,  # should say "postgresql" — if it says "sqlite", that's the bug
+            "database_engine": engine
         }
+
+    return app
 
 
 app = create_app()
+
 
 if __name__ == "__main__":
     app.run(debug=True)
