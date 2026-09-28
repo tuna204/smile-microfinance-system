@@ -7,7 +7,7 @@ from extensions import db, login_manager, mail, migrate
 from models import Member
 
 
-# Global safety net:
+# Global safety net::
 # Prevent slow/unreachable network services from hanging forever.
 socket.setdefaulttimeout(10)
 
