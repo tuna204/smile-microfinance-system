@@ -275,3 +275,302 @@
   color: var(--paper);
 }
 .app-referral-count { margin-top: 10px; font-size: 0.85rem; color: rgba(251,246,234,0.7); }
+
+
+/* ============================================================
+   MOBILE APP / DASHBOARD RESPONSIVENESS
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+  /* ---------- Main app spacing ---------- */
+
+  .app-shell {
+    padding: 28px 0 50px;
+    min-height: calc(100vh - 70px);
+  }
+
+  .app-shell .wrap {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* ---------- Page heading ---------- */
+
+  .app-page-head {
+    margin-bottom: 24px;
+  }
+
+  .app-page-head h1 {
+    font-size: 1.8rem;
+  }
+
+  .app-page-head p {
+    font-size: 0.9rem;
+  }
+
+
+  /* ---------- Profile ---------- */
+
+  .app-profile-card {
+    gap: 14px;
+    margin-bottom: 22px;
+  }
+
+  .app-profile-photo,
+  .app-profile-initials {
+    width: 58px;
+    height: 58px;
+  }
+
+  .app-profile-initials {
+    font-size: 1.45rem;
+  }
+
+  .app-profile-name {
+    font-size: 1.15rem;
+  }
+
+  .app-profile-email {
+    font-size: 0.8rem;
+    overflow-wrap: anywhere;
+  }
+
+
+  /* ---------- Balance card ---------- */
+
+  .app-balance-card {
+    padding: 24px 20px;
+    margin-bottom: 22px;
+  }
+
+  .app-balance-amount {
+    font-size: 2rem;
+    overflow-wrap: anywhere;
+  }
+
+  .app-balance-sub {
+    font-size: 0.82rem;
+  }
+
+  .app-membership-no {
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
+  }
+
+
+  /* ---------- Pay-in box ---------- */
+
+  .app-payin-box {
+    padding: 18px;
+    margin-bottom: 24px;
+  }
+
+  .app-payin-ref {
+    display: block;
+    width: 100%;
+    overflow-wrap: anywhere;
+    font-size: 0.9rem;
+  }
+
+
+  /* ---------- Sections ---------- */
+
+  .app-section {
+    margin-bottom: 30px;
+  }
+
+  .app-section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .app-section-head h3 {
+    font-size: 1.2rem;
+  }
+
+
+  /* ---------- Dashboard rows ---------- */
+
+  .app-row {
+    width: 100%;
+    padding: 15px;
+    gap: 10px;
+  }
+
+  .app-row-main {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .app-row-title {
+    overflow-wrap: anywhere;
+  }
+
+  .app-row-sub {
+    overflow-wrap: anywhere;
+  }
+
+  .app-row-amount {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+
+  /* ---------- Admin statistics ---------- */
+
+  .app-stat-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-bottom: 26px;
+  }
+
+  .app-stat-card {
+    padding: 20px;
+  }
+
+  .app-stat-card .num {
+    font-size: 1.7rem;
+  }
+
+
+  /* ---------- Admin forms ---------- */
+
+  .app-form-card {
+    width: 100%;
+    max-width: none;
+    padding: 20px;
+  }
+
+  .app-form-card .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+
+  /* ---------- Bank details ---------- */
+
+  .app-bank-details {
+    padding: 15px;
+  }
+
+  .app-bank-details .row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    padding: 9px 0;
+  }
+
+  .app-bank-details .value {
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
+  }
+
+
+  /* ---------- Referral box ---------- */
+
+  .app-referral-box {
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+
+  .app-referral-link-row {
+    flex-direction: column;
+  }
+
+  .app-referral-link-row input {
+    width: 100%;
+    min-width: 0;
+    font-size: 0.78rem;
+  }
+
+  .app-referral-link-row .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+
+  /* ---------- Flash messages ---------- */
+
+  .app-flash-stack {
+    margin-bottom: 20px;
+  }
+
+  .app-flash {
+    padding: 12px 14px;
+    font-size: 0.85rem;
+    overflow-wrap: anywhere;
+  }
+
+
+  /* ---------- Status pills ---------- */
+
+  .app-pill {
+    font-size: 0.65rem;
+    padding: 3px 8px;
+  }
+
+
+  /* ---------- General buttons ---------- */
+
+  .app-shell .btn {
+    max-width: 100%;
+  }
+
+
+  /* ---------- Prevent long content from breaking screen ---------- */
+
+  .app-shell,
+  .app-shell * {
+    max-width: 100%;
+  }
+
+  .app-shell input,
+  .app-shell select,
+  .app-shell textarea {
+    max-width: 100%;
+  }
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 400px) {
+
+  .app-shell {
+    padding-top: 22px;
+  }
+
+  .app-shell .wrap {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .app-page-head h1 {
+    font-size: 1.6rem;
+  }
+
+  .app-balance-card {
+    padding: 20px 16px;
+  }
+
+  .app-balance-amount {
+    font-size: 1.75rem;
+  }
+
+  .app-form-card {
+    padding: 16px;
+  }
+
+  .app-stat-card {
+    padding: 16px;
+  }
+
+  .app-referral-box {
+    padding: 16px;
+  }
+}
