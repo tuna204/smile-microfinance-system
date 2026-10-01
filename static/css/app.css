@@ -278,299 +278,85 @@
 
 
 /* ============================================================
-   MOBILE APP / DASHBOARD RESPONSIVENESS
+   MOBILE RULES FOR DASHBOARD + ADMIN PAGES
+   If your app.css already has a short rule like:
+     @media (max-width: 700px) {
+       .app-stat-grid { grid-template-columns: 1fr; }
+       .app-row { flex-direction: column; align-items: flex-start; }
+     }
+   DELETE that old block and paste this whole thing in its place,
+   at the end of static/css/app.css. This covers every component
+   added since that first version — the profile card, referral
+   box, and bank details box never had mobile rules before.
    ============================================================ */
 
 @media (max-width: 700px) {
+  .app-shell { padding: 28px 0 56px; }
 
-  /* ---------- Main app spacing ---------- */
+  /* Stat cards: 1 per row, tighter */
+  .app-stat-grid { grid-template-columns: 1fr; gap: 14px; }
 
-  .app-shell {
-    padding: 28px 0 50px;
-    min-height: calc(100vh - 70px);
-  }
-
-  .app-shell .wrap {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-
-  /* ---------- Page heading ---------- */
-
-  .app-page-head {
-    margin-bottom: 24px;
-  }
-
-  .app-page-head h1 {
-    font-size: 1.8rem;
-  }
-
-  .app-page-head p {
-    font-size: 0.9rem;
-  }
-
-
-  /* ---------- Profile ---------- */
-
-  .app-profile-card {
-    gap: 14px;
-    margin-bottom: 22px;
-  }
-
-  .app-profile-photo,
-  .app-profile-initials {
-    width: 58px;
-    height: 58px;
-  }
-
-  .app-profile-initials {
-    font-size: 1.45rem;
-  }
-
-  .app-profile-name {
-    font-size: 1.15rem;
-  }
-
-  .app-profile-email {
-    font-size: 0.8rem;
-    overflow-wrap: anywhere;
-  }
-
-
-  /* ---------- Balance card ---------- */
-
-  .app-balance-card {
-    padding: 24px 20px;
-    margin-bottom: 22px;
-  }
-
-  .app-balance-amount {
-    font-size: 2rem;
-    overflow-wrap: anywhere;
-  }
-
-  .app-balance-sub {
-    font-size: 0.82rem;
-  }
-
-  .app-membership-no {
-    font-size: 0.75rem;
-    overflow-wrap: anywhere;
-  }
-
-
-  /* ---------- Pay-in box ---------- */
-
-  .app-payin-box {
-    padding: 18px;
-    margin-bottom: 24px;
-  }
-
-  .app-payin-ref {
-    display: block;
-    width: 100%;
-    overflow-wrap: anywhere;
-    font-size: 0.9rem;
-  }
-
-
-  /* ---------- Sections ---------- */
-
-  .app-section {
-    margin-bottom: 30px;
-  }
-
-  .app-section-head {
+  /* Generic list rows (members, pending deposits, referral payouts,
+     loans, investments, transactions) */
+  .app-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
-    margin-bottom: 12px;
-  }
-
-  .app-section-head h3 {
-    font-size: 1.2rem;
-  }
-
-
-  /* ---------- Dashboard rows ---------- */
-
-  .app-row {
-    width: 100%;
-    padding: 15px;
     gap: 10px;
   }
-
-  .app-row-main {
+  .app-row > div[style*="display:flex"] {
     width: 100%;
-    min-width: 0;
+    justify-content: space-between;
   }
 
-  .app-row-title {
-    overflow-wrap: anywhere;
-  }
+  /* Profile header: smaller photo, text never overflows the screen */
+  .app-profile-card { gap: 14px; }
+  .app-profile-photo { width: 56px; height: 56px; flex-shrink: 0; }
+  .app-profile-initials { font-size: 1.4rem; }
+  .app-profile-name { font-size: 1.1rem; overflow-wrap: anywhere; }
+  .app-profile-email { font-size: 0.85rem; overflow-wrap: anywhere; }
 
-  .app-row-sub {
-    overflow-wrap: anywhere;
-  }
+  /* Balance card */
+  .app-balance-card { padding: 24px; }
+  .app-balance-amount { font-size: 1.8rem; }
 
-  .app-row-amount {
-    white-space: normal;
-    overflow-wrap: anywhere;
-  }
+  /* Pay-in / activation box */
+  .app-payin-box { padding: 16px; }
 
-
-  /* ---------- Admin statistics ---------- */
-
-  .app-stat-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-    margin-bottom: 26px;
-  }
-
-  .app-stat-card {
-    padding: 20px;
-  }
-
-  .app-stat-card .num {
-    font-size: 1.7rem;
-  }
-
-
-  /* ---------- Admin forms ---------- */
-
-  .app-form-card {
-    width: 100%;
-    max-width: none;
-    padding: 20px;
-  }
-
-  .app-form-card .btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-
-  /* ---------- Bank details ---------- */
-
-  .app-bank-details {
-    padding: 15px;
-  }
-
+  /* Bank details: stack label above value instead of side-by-side —
+     long values like "Smile Multipurpose Cooperative Society" were
+     getting squeezed against the label on narrow screens */
   .app-bank-details .row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 3px;
-    padding: 9px 0;
+    gap: 2px;
   }
+  .app-bank-details .value { font-size: 0.95rem; word-break: break-word; }
 
-  .app-bank-details .value {
-    font-size: 0.95rem;
-    overflow-wrap: anywhere;
-  }
+  /* WhatsApp link: full-width, easier to tap */
+  .app-whatsapp-link { width: 100%; justify-content: center; }
 
+  /* Referral box */
+  .app-referral-box { padding: 18px; }
+  .app-referral-link-row { flex-direction: column; }
+  .app-referral-link-row input { width: 100%; }
+  .app-referral-link-row button { width: 100%; }
 
-  /* ---------- Referral box ---------- */
-
-  .app-referral-box {
-    padding: 20px;
-    margin-bottom: 24px;
-  }
-
-  .app-referral-link-row {
+  /* Any form card (record payment, promote admin, member search,
+     add-money, contact) — inputs and submit buttons go full width */
+  .app-form-card { padding: 20px; }
+  .app-form-card form[style*="flex"] {
     flex-direction: column;
+    align-items: stretch !important;
   }
+  .app-form-card button[type="submit"] { width: 100%; }
 
-  .app-referral-link-row input {
-    width: 100%;
-    min-width: 0;
-    font-size: 0.78rem;
-  }
-
-  .app-referral-link-row .btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-
-  /* ---------- Flash messages ---------- */
-
-  .app-flash-stack {
-    margin-bottom: 20px;
-  }
-
-  .app-flash {
-    padding: 12px 14px;
-    font-size: 0.85rem;
-    overflow-wrap: anywhere;
-  }
-
-
-  /* ---------- Status pills ---------- */
-
-  .app-pill {
-    font-size: 0.65rem;
-    padding: 3px 8px;
-  }
-
-
-  /* ---------- General buttons ---------- */
-
-  .app-shell .btn {
-    max-width: 100%;
-  }
-
-
-  /* ---------- Prevent long content from breaking screen ---------- */
-
-  .app-shell,
-  .app-shell * {
-    max-width: 100%;
-  }
-
-  .app-shell input,
-  .app-shell select,
-  .app-shell textarea {
-    max-width: 100%;
-  }
+  /* Section headers */
+  .app-section-head { flex-wrap: wrap; gap: 8px; }
+  .app-page-head h1 { font-size: 1.5rem; }
 }
 
-
-/* ============================================================
-   VERY SMALL PHONES
-   ============================================================ */
-
-@media (max-width: 400px) {
-
-  .app-shell {
-    padding-top: 22px;
-  }
-
-  .app-shell .wrap {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .app-page-head h1 {
-    font-size: 1.6rem;
-  }
-
-  .app-balance-card {
-    padding: 20px 16px;
-  }
-
-  .app-balance-amount {
-    font-size: 1.75rem;
-  }
-
-  .app-form-card {
-    padding: 16px;
-  }
-
-  .app-stat-card {
-    padding: 16px;
-  }
-
-  .app-referral-box {
-    padding: 16px;
-  }
+@media (max-width: 420px) {
+  /* Extra-small phones only */
+  .app-balance-amount { font-size: 1.5rem; }
+  .app-stat-card .num { font-size: 1.6rem; }
 }
