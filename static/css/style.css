@@ -927,3 +927,65 @@ section { padding: 72px 0; }
     transform: translateY(-7px) rotate(-45deg);
   }
 }
+
+
+/* ============================================================
+   CONTACT PAGE
+   ============================================================ */
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 60px;
+  align-items: start;
+}
+
+.contact-grid .form-card {
+  max-width: none;
+}
+
+.contact-grid .card {
+  margin-bottom: 20px;
+}
+
+.contact-grid .card:last-child {
+  margin-bottom: 0;
+}
+
+/* Tablet */
+@media (max-width: 900px) {
+  .contact-grid {
+    gap: 40px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 700px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .contact-grid .form-card {
+    padding: 28px 22px;
+  }
+
+  .contact-grid form {
+    gap: 16px !important;
+  }
+
+  .contact-grid .card {
+    padding: 24px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 420px) {
+  .contact-grid .form-card {
+    padding: 24px 18px;
+  }
+
+  .contact-grid .card {
+    padding: 22px 18px;
+  }
+}
