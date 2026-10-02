@@ -832,7 +832,6 @@ section { padding: 72px 0; }
 .whatsapp-float svg{width:30px;height:30px;fill:#fff;}
 
 
-
 /* ============================================================
    MOBILE NAVIGATION
    ============================================================ */
@@ -911,13 +910,11 @@ section { padding: 72px 0; }
     font-size: 1rem;
   }
 
-  /* Hide desktop user controls on mobile.
-     The mobile menu will contain the navigation. */
   .site-header .nav-cta {
     display: none;
   }
 
-  /* Animate hamburger into X */
+  /* Hamburger → X */
   .site-header.nav-open .menu-toggle span:nth-child(1) {
     transform: translateY(7px) rotate(45deg);
   }
