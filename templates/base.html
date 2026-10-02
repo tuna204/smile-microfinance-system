@@ -107,5 +107,18 @@
   </div>
 </main>
 
+
+<script>
+function toggleMobileMenu(button) {
+  const header = document.querySelector('.site-header');
+  const isOpen = header.classList.toggle('nav-open');
+
+  button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  button.setAttribute(
+    'aria-label',
+    isOpen ? 'Close menu' : 'Open menu'
+  );
+}
+</script>
 </body>
 </html>
