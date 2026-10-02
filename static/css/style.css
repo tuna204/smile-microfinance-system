@@ -830,3 +830,103 @@ section { padding: 72px 0; }
 }
 .whatsapp-float:hover{transform:scale(1.1);}
 .whatsapp-float svg{width:30px;height:30px;fill:#fff;}
+
+
+
+/* ============================================================
+   MOBILE NAVIGATION
+   ============================================================ */
+
+.menu-toggle {
+  display: none;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--emerald);
+  border-radius: 2px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+
+  .site-header .wrap {
+    position: relative;
+  }
+
+  .menu-toggle {
+    display: flex;
+    margin-left: auto;
+    margin-right: 8px;
+  }
+
+  .site-header nav {
+    display: none;
+  }
+
+  .site-header.nav-open nav {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  .site-header.nav-open .nav-links {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 10px 28px 18px;
+  }
+
+  .site-header.nav-open .nav-links li {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .site-header.nav-open .nav-links li:last-child {
+    border-bottom: none;
+  }
+
+  .site-header.nav-open .nav-links a {
+    display: block;
+    padding: 14px 0;
+    font-size: 1rem;
+  }
+
+  /* Hide desktop user controls on mobile.
+     The mobile menu will contain the navigation. */
+  .site-header .nav-cta {
+    display: none;
+  }
+
+  /* Animate hamburger into X */
+  .site-header.nav-open .menu-toggle span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .site-header.nav-open .menu-toggle span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .site-header.nav-open .menu-toggle span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+}
