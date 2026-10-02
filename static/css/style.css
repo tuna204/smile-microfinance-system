@@ -989,3 +989,23 @@ section { padding: 72px 0; }
     padding: 22px 18px;
   }
 }
+
+
+.contact-hero {
+  padding: 70px 0 90px;
+}
+
+@media (max-width: 600px) {
+  .contact-hero {
+    padding: 50px 0 60px;
+  }
+
+  .contact-hero h1 {
+    font-size: var(--step-3);
+    max-width: 12ch;
+  }
+
+  .contact-hero .lede {
+    font-size: 1rem;
+  }
+}
