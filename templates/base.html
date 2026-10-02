@@ -18,26 +18,76 @@
 
 <header class="site-header">
   <div class="wrap">
-    <a href="{{ url_for('public.index') }}" class="logo">Smile<span>.</span></a>
-    <nav>
+
+    <a href="{{ url_for('public.index') }}" class="logo">
+      Smile<span>.</span>
+    </a>
+
+    {% if current_user.is_authenticated %}
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        onclick="toggleMobileMenu(this)"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    {% endif %}
+
+    <nav id="mobile-nav">
       <ul class="nav-links">
+
         {% if current_user.is_authenticated %}
-          <li><a href="{{ url_for('dashboard.home') }}">Dashboard</a></li>
+
+          <li>
+            <a href="{{ url_for('dashboard.home') }}">
+              Dashboard
+            </a>
+          </li>
+
           {% if current_user.is_admin() %}
-            <li><a href="{{ url_for('admin.home') }}">Admin</a></li>
+            <li>
+              <a href="{{ url_for('admin.home') }}">
+                Admin
+              </a>
+            </li>
           {% endif %}
+
         {% endif %}
+
       </ul>
     </nav>
+
     <div class="nav-cta">
+
       {% if current_user.is_authenticated %}
-        <span class="app-user-chip">{{ current_user.full_name }}</span>
-        <a href="{{ url_for('public.membership') }}#login" class="btn btn-ghost">Log Out</a>
+
+        <span class="app-user-chip">
+          {{ current_user.full_name }}
+        </span>
+
+        <a href="{{ url_for('public.membership') }}#login" class="btn btn-ghost">
+          Log Out
+        </a>
+
       {% else %}
-        <a href="{{ url_for('public.membership') }}#login" class="btn btn-ghost">Member Login</a>
-        <a href="{{ url_for('public.membership') }}#register" class="btn btn-primary">Join Smile</a>
+
+        <a href="{{ url_for('public.membership') }}#login" class="btn btn-ghost">
+          Member Login
+        </a>
+
+        <a href="{{ url_for('public.membership') }}#register" class="btn btn-primary">
+          Join Smile
+        </a>
+
       {% endif %}
+
     </div>
+
   </div>
 </header>
 
