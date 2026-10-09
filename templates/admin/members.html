@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 {% block title %}Members — Smile Cooperative{% endblock %}
 {% block content %}
@@ -5,16 +6,63 @@
 <div class="app-page-head">
   <span class="eyebrow">Staff Area</span>
   <h1>Members</h1>
-  <p>Everyone's submitted payout bank details - for loan disbursement, dividends, or looking someone up.</p>
+  <p>Manage membership activation and review each member's savings activity.</p>
 </div>
 
-<div class="app-form-card" style="max-width:none; margin-bottom:24px;">
-  <form method="GET" style="display:flex; gap:12px; align-items:end; flex-wrap:wrap;">
-    <div class="field" style="flex:1; min-width:220px; margin-bottom:0;">
-      <label for="q">Search by name, membership number, or email</label>
-      <input type="text" id="q" name="q" value="{{ q }}" placeholder="e.g. SM-2026-12345">
+<div class="app-stat-grid">
+  <div class="app-stat-card">
+    <span class="num">{{ total_members }}</span>
+    <span class="label">Total Members</span>
+  </div>
+  <div class="app-stat-card">
+    <span class="num">{{ active_members }}</span>
+    <span class="label">Activated Members</span>
+  </div>
+  <div class="app-stat-card">
+    <span class="num">{{ inactive_members }}</span>
+    <span class="label">Awaiting Activation</span>
+  </div>
+</div>
+
+<div class="app-form-card"
+     style="max-width:none; margin-bottom:24px;">
+  <form method="GET"
+        style="display:flex; gap:12px; align-items:end; flex-wrap:wrap;">
+
+    <div class="field"
+         style="flex:1; min-width:220px; margin-bottom:0;">
+      <label for="q">Search members</label>
+      <input
+        type="text"
+        id="q"
+        name="q"
+        value="{{ q }}"
+        placeholder="Name, membership number, or email">
     </div>
-    <button type="submit" class="btn btn-primary">Search</button>
+
+    <div class="field"
+         style="min-width:190px; margin-bottom:0;">
+      <label for="status">Activation status</label>
+      <select id="status" name="status">
+        <option value="all"
+          {% if status_filter == 'all' %}selected{% endif %}>
+          All members
+        </option>
+        <option value="active"
+          {% if status_filter == 'active' %}selected{% endif %}>
+          Activated
+        </option>
+        <option value="inactive"
+          {% if status_filter == 'inactive' %}selected{% endif %}>
+          Not activated
+        </option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Apply filters</button>
+    <a href="{{ url_for('admin.members') }}" class="btn btn-ghost">
+      Reset
+    </a>
   </form>
 </div>
 
@@ -22,27 +70,67 @@
   <div class="app-list">
     {% for m in members %}
       <div class="app-row" style="align-items:flex-start;">
-        <div class="app-row-main">
-          <span class="app-row-title">{{ m.full_name }} ({{ m.membership_no }})</span>
-          <span class="app-row-sub">{{ m.email }} · {{ m.phone }}</span>
+
+        <div class="app-row-main" style="flex:1; min-width:0;">
+          <span class="app-row-title">
+            {{ m.full_name }} ({{ m.membership_no }})
+          </span>
+
+          <span class="app-row-sub">
+            {{ m.email }} · {{ m.phone }}
+          </span>
+
+          <span class="app-row-sub">
+            Savings frequency:
+            {{ m.savings_frequency or 'Not specified' }}
+          </span>
+
           {% if m.payout_account_number %}
-            <span class="app-row-sub" style="margin-top:6px; font-family:var(--font-mono);">
-              {{ m.payout_account_number }} — {{ m.payout_bank_name }} — {{ m.payout_account_name }}
+            <span class="app-row-sub" style="margin-top:6px;">
+              Payout account:
+              {{ m.payout_account_number }}
+              · {{ m.payout_bank_name or 'Bank not specified' }}
+              · {{ m.payout_account_name or 'Name not specified' }}
             </span>
           {% else %}
-            <span class="app-row-sub" style="color:#8A2A20;">No payout bank details on file.</span>
+            <span class="app-row-sub" style="color:#8A2A20;">
+              No payout bank details on file.
+            </span>
           {% endif %}
         </div>
-        <span class="app-pill app-pill-{{ 'approved' if m.registration_fee_paid else 'pending' }}">
-          {{ 'Active' if m.registration_fee_paid else 'Not activated' }}
-        </span>
+
+        <div style="display:flex; flex-direction:column;
+                    align-items:flex-end; gap:10px; min-width:150px;">
+
+          <span class="app-pill app-pill-{{ 'approved' if m.registration_fee_paid else 'pending' }}">
+            {{ 'Active' if m.registration_fee_paid else 'Not activated' }}
+          </span>
+
+          <span class="app-row-amount">
+            ₦{{ "{:,.2f}".format(m.savings_account.balance if m.savings_account else 0) }}
+          </span>
+
+          <span class="app-row-sub">Current savings</span>
+
+          <a class="btn btn-ghost"
+             href="{{ url_for('admin.member_financial_profile', member_id=m.id) }}">
+            View financial profile
+          </a>
+        </div>
+
       </div>
     {% endfor %}
   </div>
 {% else %}
-  <div class="app-empty">No members found.</div>
+  <div class="app-empty">
+    No members match these filters.
+  </div>
 {% endif %}
 
-<p style="margin-top:24px;"><a href="{{ url_for('admin.home') }}">&larr; Back to admin overview</a></p>
+<p style="margin-top:24px;">
+  <a href="{{ url_for('admin.home') }}">
+    &larr; Back to admin overview
+  </a>
+</p>
 
 {% endblock %}
