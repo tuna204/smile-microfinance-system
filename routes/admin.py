@@ -136,22 +136,87 @@ def record_payment():
     return render_template("admin/record_payment.html")
 
 
+
 @admin_bp.route("/members")
 @login_required
 @admin_required
 def members():
+    from models import Transaction
+
     q = request.args.get("q", "").strip()
+    status_filter = request.args.get("status", "all").strip().lower()
+
     query = Member.query.filter_by(role="member")
+
     if q:
         like = f"%{q}%"
         query = query.filter(
-            (Member.full_name.ilike(like)) |
-            (Member.membership_no.ilike(like)) |
-            (Member.email.ilike(like))
+            (Member.full_name.ilike(like))
+            | (Member.membership_no.ilike(like))
+            | (Member.email.ilike(like))
         )
-    all_members = query.order_by(Member.created_at.desc()).all()
-    return render_template("admin/members.html", members=all_members, q=q)
 
+    if status_filter == "active":
+        query = query.filter(Member.registration_fee_paid.is_(True))
+    elif status_filter == "inactive":
+        query = query.filter(Member.registration_fee_paid.is_(False))
+
+    all_members = query.order_by(Member.created_at.desc()).all()
+
+    # Calculate summary counts from all registered members, not just
+    # the current search results.
+    base_query = Member.query.filter_by(role="member")
+    total_members = base_query.count()
+    active_members = base_query.filter(
+        Member.registration_fee_paid.is_(True)
+    ).count()
+    inactive_members = base_query.filter(
+        Member.registration_fee_paid.is_(False)
+    ).count()
+
+    return render_template(
+        "admin/members.html",
+        members=all_members,
+        q=q,
+        status_filter=status_filter,
+        total_members=total_members,
+        active_members=active_members,
+        inactive_members=inactive_members,
+    )
+
+
+@admin_bp.route("/members/<int:member_id>")
+@login_required
+@admin_required
+def member_financial_profile(member_id):
+    from models import Transaction
+
+    member = Member.query.filter_by(
+        id=member_id,
+        role="member",
+    ).first_or_404()
+
+    # Use the existing savings account and ledger records.
+    savings_balance = (
+        member.savings_account.balance
+        if member.savings_account is not None
+        else 0
+    )
+
+    transactions = (
+        Transaction.query
+        .filter_by(member_id=member.id)
+        .order_by(Transaction.created_at.desc())
+        .all()
+    )
+
+    return render_template(
+        "admin/member_financial_profile.html",
+        member=member,
+        savings_balance=savings_balance,
+        transactions=transactions,
+    )
+    
 
 @admin_bp.route("/promote-admin", methods=["GET", "POST"])
 @login_required
