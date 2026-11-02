@@ -408,3 +408,68 @@
   .app-balance-amount { font-size: 1.5rem; }
   .app-stat-card .num { font-size: 1.6rem; }
 }
+
+/* ============================================================
+   ADD THIS to the end of static/css/app.css. Don't remove anything.
+   Styles for the Activated Members table.
+   ============================================================ */
+
+/* Big money figures in the stat cards shrink instead of overflowing */
+.app-stat-card .num {
+  font-size: clamp(1.3rem, 1rem + 1.5vw, 2rem);
+  overflow-wrap: anywhere;
+}
+
+.app-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.app-table {
+  width: 100%;
+  min-width: 780px;          /* below this width the wrapper scrolls sideways */
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.app-table th {
+  background: var(--emerald);
+  color: var(--paper);
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 14px 16px;
+  white-space: nowrap;
+}
+.app-table td {
+  padding: 14px 16px;
+  border-top: 1px solid var(--line);
+  vertical-align: middle;
+}
+.app-table tbody tr:nth-child(even) { background: var(--paper); }
+.app-table tbody tr:hover { background: var(--paper-dim); }
+.app-table .mono { font-family: var(--font-mono); font-size: 0.85rem; white-space: nowrap; }
+.app-table .num { text-align: right; font-family: var(--font-mono); white-space: nowrap; }
+.app-table td.num { font-weight: 700; color: var(--emerald); }
+.app-table tfoot td {
+  background: var(--emerald);
+  color: var(--paper);
+  font-weight: 700;
+  border-top: 2px solid var(--gold);
+}
+.app-table tfoot td.num { color: var(--gold-dim); font-size: 1.05rem; }
+
+/* "Swipe sideways" hint — only shown on phones */
+.app-table-hint {
+  display: none;
+  font-size: 0.8rem;
+  color: #7A7864;
+  margin-bottom: 8px;
+}
+@media (max-width: 820px) {
+  .app-table-hint { display: block; }
+}
