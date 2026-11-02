@@ -39,10 +39,11 @@
 <div class="app-referral-box">
   <div class="app-referral-label">Refer &amp; Earn</div>
   <p style="margin-top:8px;">Share your link and wait for confirmation within 48hrs - earn ₦1,000 for every friend who joins and pays their registration fee.</p>
-  <div class="app-referral-link-row">
-    <input type="text" readonly value="{{ referral_link }}" id="referral-link-input">
-    <button type="button" class="btn btn-primary" onclick="copyReferralLink()">Copy Link</button>
-  </div>
+<div class="app-referral-link-row">
+  <button type="button" class="btn btn-primary" onclick="shareReferralLink()">Share</button>
+  <input type="text" readonly value="{{ referral_link }}" id="referral-link-input">
+  <button type="button" class="btn btn-on-dark" onclick="copyReferralLink(this)">Copy Link</button>
+</div>
   <p class="app-referral-count">{{ referral_count }} member{{ 's' if referral_count != 1 else '' }} referred so far</p>
 </div>
 
@@ -171,13 +172,21 @@
 </div>
 
 <script>
-function copyReferralLink() {
+function copyReferralLink(btn) {
   const input = document.getElementById('referral-link-input');
-  input.select();
   navigator.clipboard.writeText(input.value).then(() => {
-    event.target.textContent = 'Copied!';
-    setTimeout(() => { event.target.textContent = 'Copy Link'; }, 2000);
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy Link'; }, 2000);
   });
+}
+function shareReferralLink() {
+  const link = document.getElementById('referral-link-input').value;
+  const message = "Join me on Smile Multipurpose Cooperative. Save, borrow and invest together. Register with my link:";
+  if (navigator.share) {
+    navigator.share({ title: 'Join Smile Cooperative', text: message, url: link }).catch(() => {});
+  } else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(message + ' ' + link), '_blank');
+  }
 }
 </script>
 
