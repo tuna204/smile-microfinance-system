@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Activated Members - Smile Cooperative{% endblock %}
+{% block content %}
+
+<div class="app-page-head">
+  <span class="eyebrow">Staff Area</span>
+  <h1>Activated Members</h1>
+  <p>Every member who has paid the registration fee, the amount each has saved, and the cooperative's overall total.</p>
+</div>
+
+<div class="app-stat-grid">
+  <div class="app-stat-card">
+    <span class="num">{{ activated_count }}</span>
+    <span class="label">Activated Members</span>
+  </div>
+  <div class="app-stat-card">
+    <span class="num">₦{{ "{:,.2f}".format(grand_total) }}</span>
+    <span class="label">Total Savings (all activated members)</span>
+  </div>
+  <div class="app-stat-card">
+    <span class="num">₦{{ "{:,.2f}".format(today_total) }}</span>
+    <span class="label">Collected Today</span>
+    <span class="app-row-sub" style="display:block; margin-top:6px;">
+      Savings ₦{{ "{:,.2f}".format(today_savings) }} · Registration fees ₦{{ "{:,.2f}".format(today_fees) }}
+    </span>
+  </div>
+</div>
+
+<div class="app-form-card" style="max-width:none; margin-bottom:24px;">
+  <form method="GET" style="display:flex; gap:12px; align-items:end; flex-wrap:wrap;">
+    <div class="field" style="flex:1; min-width:220px; margin-bottom:0;">
+      <label for="q">Search by name, membership number, or email</label>
+      <input type="text" id="q" name="q" value="{{ q }}" placeholder="e.g. SM-2026-12345">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+  </form>
+</div>
+
+{% if rows %}
+  <p class="app-table-hint">Swipe sideways to see all columns →</p>
+  <div class="app-table-wrap">
+    <table class="app-table">
+      <thead>
+        <tr>
+          <th>S/N</th>
+          <th>Member</th>
+          <th>Membership No.</th>
+          <th>Phone</th>
+          <th>Date Joined</th>
+          <th>Savings Plan</th>
+          <th class="num">Amount Saved</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m, balance in rows %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>
+              <strong>{{ m.full_name }}</strong><br>
+              <span class="app-row-sub">{{ m.email }}</span>
+            </td>
+            <td class="mono">{{ m.membership_no }}</td>
+            <td>{{ m.phone }}</td>
+            <td>{{ m.date_joined.strftime('%d %b %Y') if m.date_joined else '—' }}</td>
+            <td>{{ m.savings_frequency or '—' }}</td>
+            <td class="num">₦{{ "{:,.2f}".format(balance) }}</td>
+            <td><a href="{{ url_for('admin.member_financials', member_id=m.id) }}">View</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="6">
+            {{ 'Total of matching members' if q else 'Total savings' }}
+            ({{ rows|length }} member{{ '' if rows|length == 1 else 's' }})
+          </td>
+          <td class="num">₦{{ "{:,.2f}".format(listed_total) }}</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+{% else %}
+  <div class="app-empty">
+    {% if q %}No activated members match "{{ q }}".{% else %}No members have been activated yet.{% endif %}
+  </div>
+{% endif %}
+
+<p style="margin-top:24px;"><a href="{{ url_for('admin.home') }}">&larr; Back to admin overview</a></p>
+
+{% endblock %}
