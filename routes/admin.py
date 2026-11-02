@@ -298,3 +298,113 @@ def bootstrap_first_admin(email):
     db.session.commit()
 
     return f"Done! {member.full_name} ({email}) is now an admin. DELETE THIS ROUTE NOW and push again."
+
+
+
+# ============================================================
+# ADD THIS to the very bottom of routes/admin.py. Don't remove
+# anything already there. All the imports it needs are inside
+# the functions, so nothing at the top of the file has to change.
+# ============================================================
+
+@admin_bp.route("/activated-members")
+@login_required
+@admin_required
+def activated_members():
+    """Table of every ACTIVATED member with the amount each has saved,
+    plus the cooperative's overall total and today's collections."""
+    from datetime import datetime, timedelta, timezone
+    from decimal import Decimal
+    from sqlalchemy import func
+    from extensions import db
+    from models import Transaction, SavingsAccount
+
+    q = request.args.get("q", "").strip()
+    query = Member.query.filter_by(role="member", registration_fee_paid=True)
+    if q:
+        like = f"%{q}%"
+        query = query.filter(
+            (Member.full_name.ilike(like)) |
+            (Member.membership_no.ilike(like)) |
+            (Member.email.ilike(like))
+        )
+
+    # One row per member: (member, amount saved). Highest savers first.
+    rows = []
+    for m in query.all():
+        account = m.savings_account
+        balance = account.balance if account and account.balance is not None else Decimal("0")
+        rows.append((m, balance))
+    rows.sort(key=lambda r: (-r[1], r[0].full_name.lower()))
+
+    # Headline numbers always cover ALL activated members, so searching
+    # never changes the overall total.
+    activated_count = Member.query.filter_by(role="member", registration_fee_paid=True).count()
+    grand_total = db.session.query(
+        func.coalesce(func.sum(SavingsAccount.balance), 0)
+    ).join(Member, Member.id == SavingsAccount.member_id).filter(
+        Member.role == "member", Member.registration_fee_paid.is_(True)
+    ).scalar()
+    grand_total = Decimal(str(grand_total))
+    listed_total = sum((balance for _, balance in rows), Decimal("0"))
+
+    # "Today" means today in Nigerian time (UTC+1, no daylight saving).
+    # Timestamps are stored in UTC, so convert midnight WAT back to UTC.
+    wat = timezone(timedelta(hours=1))
+    start_of_day_utc = (
+        datetime.now(wat)
+        .replace(hour=0, minute=0, second=0, microsecond=0)
+        .astimezone(timezone.utc)
+        .replace(tzinfo=None)
+    )
+
+    def collected_today(txn_type):
+        # reflected_at = the moment the money was actually credited/confirmed
+        # (for an approved member request, that's the approval time, not
+        # the time the member first generated the request).
+        total = db.session.query(
+            func.coalesce(func.sum(Transaction.amount), 0)
+        ).filter(
+            Transaction.type == txn_type,
+            Transaction.status.in_(["reflected", "approved", "reviewed"]),
+            Transaction.reflected_at >= start_of_day_utc,
+        ).scalar()
+        return Decimal(str(total))
+
+    today_savings = collected_today("deposit")
+    today_fees = collected_today("registration_fee")
+
+    return render_template(
+        "admin/activated_members.html",
+        rows=rows,
+        q=q,
+        activated_count=activated_count,
+        grand_total=grand_total,
+        listed_total=listed_total,
+        today_savings=today_savings,
+        today_fees=today_fees,
+        today_total=today_savings + today_fees,
+    )
+
+
+@admin_bp.route("/members/<int:member_id>")
+@login_required
+@admin_required
+def member_financials(member_id):
+    """One member's financial profile (balance + full transaction history).
+    If you ALREADY have a route for your Member Financial Profile page,
+    keep yours and delete this one — just make the 'View' link in
+    activated_members.html use your route's function name."""
+    from models import Transaction
+
+    member = Member.query.get_or_404(member_id)
+    account = member.savings_account
+    savings_balance = account.balance if account and account.balance is not None else 0
+    transactions = member.transactions.order_by(Transaction.created_at.desc()).all()
+
+    return render_template(
+        "admin/member_financials.html",
+        member=member,
+        savings_balance=savings_balance,
+        transactions=transactions,
+    )
